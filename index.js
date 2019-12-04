@@ -3,7 +3,7 @@ const app = require('express')()
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
 
-http.listen(process.ENV.PORT || 3200, function () {
+http.listen(process.env.PORT || 3200, function () {
   console.log('listening on *:3200')
 })
 
