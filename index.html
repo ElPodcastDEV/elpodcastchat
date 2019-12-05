@@ -2,98 +2,41 @@
 <html>
   <head>
     <title>El Podcast DEV [LIVE]</title>
-    <style>
-      * {
-        margin: 0; padding: 0; box-sizing: border-box;
-        outline: none;
-      }
-      html {
-        height: 100%;
-      }
-      body {
-        --background: #446;
-        --foreground: #eee;
-        --bgdarker: #224;
-        font-family: sans-serif;
-        color: var(--foreground);
-        background-color: var(--background);
-        height: calc(100% - 25px);
-      }
-      #app {
-        display: grid;
-        grid-template-areas: "messages" "form";
-        grid-template-rows: calc(100% - 50px) 50px;
-        grid-template-columns: 1fr;
-        height: calc(100% - 50px);
-      }
-      .elform {
-        padding: 10px;
-        display: flex;
-        grid-area: form;
-        align-items: center;
-      }
-      .elform span {cursor: pointer;}
-      form input { border: 0; padding: 10px; flex-grow: 1; margin: 0 10px; }
-      form button { border: none; padding: 10px; }
-      #messages div{
-        padding: 10px;
-        display: flex;
-        flex-direction: column-reverse;
-      }
-      #messages div:nth-child(even) {
-        background: var(--bgdarker);
-        grid-area: messages;
-      }
-      #messagesHolder {
-        height: 100%;
-        overflow: auto;
-      }
-      #header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-        background-color: #EEF0F1;
-        box-shadow: 0 0 10px 0 #000;
-        color: var(--background);
-      }
-      #header img {
-        height: 50px;
-      }
-      /* width */
-      ::-webkit-scrollbar {
-        width: 10px;
-      }
-
-      /* Track */
-      ::-webkit-scrollbar-track {
-        background: var(--background);
-      }
-
-      /* Handle */
-      ::-webkit-scrollbar-thumb {
-        background: var(--bgdarker);
-      }
-
-    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="/styles/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
-    <div id="header">
-      <img src="https://cdn.simplecast.com/images/20122399-3919-4089-b540-10f66a258c04/8734f16b-187a-41cb-9a6f-34ff0f2ee6c5/640x640/1551986909artwork.jpg" />
-      <audio controls>
-        <source src="http://188.165.240.90:8292/stream" type="audio/mp3">
-        Your browser does not support the audio tag.
-      </audio>
-      <span>El Podcast DEV [LIVE]</span>
-    </div>
-    <section id="app">
-      <div id="messages">
-        <div id="messagesHolder">
-          <div v-for="message in messages">{{message}}</div>
+    <section id="app" class="app">
+      <header class="header">
+        <span class="branding">
+          <img src="https://cdn.simplecast.com/images/20122399-3919-4089-b540-10f66a258c04/8734f16b-187a-41cb-9a6f-34ff0f2ee6c5/640x640/1551986909artwork.jpg" />
+        </span>
+        <div class="audio">
+          <i class="material-icons" @click="playPause" v-show="!isPlaying">play_arrow</i>
+          <i class="material-icons" @click="playPause" v-show="isPlaying">pause</i>
+          <input type="range" min="0" max="100" v-model="volume" />
+          <i class="material-icons" @click="mute" v-show="volume!==0">volume_up</i>
+          <i class="material-icons" @click="mute" v-show="volume===0">volume_off</i>
+          <audio controls ref="elPlayer">
+            {{vol}}
+            <!-- <source src="https://www.myinstants.com/media/sounds/trollolol.swf.mp3" type="audio/mp3"> -->
+            <source src="http://188.165.240.90:8292/stream" type="audio/mp3">
+            Your browser does not support the audio tag.
+          </audio>
+        </div>
+        <div class="opts">
+          <i class="material-icons" @click="logout" v-show="username">exit_to_app</i>
+          <i class="material-icons" @click="clearChat">clear</i>
+        </div>
+      </header>
+      <div class="messages">
+        <div class="messagesHolder">
+          <div class="message" v-for="message in messages">{{message}}</div>
         </div>
       </div>
       <form @submit.prevent="submit" class="elform" v-if="username">
-        Hola {{username}} &nbsp;<span @click="logout">[Salir]</span>: <input id="m" autocomplete="off" v-model="message" placeholder="Mensage" /><button>Send</button>
+        {{username}}<input id="m" autocomplete="off" v-model="message" placeholder="Mensage" /><button>Send</button>
       </form>
       <form @submit.prevent="setName" class="elform" v-if="!username">
         Cual es tu nombre?
@@ -102,45 +45,6 @@
     </section>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const vue = new Vue({
-          el: '#app',
-          data: {
-            message: '',
-            socket: io(),
-            messages: [],
-            username: null,
-            nickname: '',
-            localStorage: JSON.parse(localStorage.data || '{}')
-          }, 
-          methods: {
-            setName () {
-              this.username = this.nickname
-              this.localStorage.username = this.username
-              localStorage.data = JSON.stringify(this.localStorage)
-            },
-            submit () {
-              this.socket.emit('chat message', `${this.username}: ${this.message}`)
-              this.message = ''
-            },
-            logout () {
-              delete localStorage.data
-              window.location.href = window.location.href
-            }
-          },
-          mounted () {
-            const { username, pastMsgs } = this.localStorage
-            if (username) this.username = username
-            if (pastMsgs) this.messages = pastMsgs
-            this.socket.on('chat message', msg => {
-              this.messages.unshift(msg)
-              this.localStorage.pastMsgs = this.messages
-              localStorage.data = JSON.stringify(this.localStorage)
-            })
-          }
-        })
-      })
-    </script>
+    <script src="/scripts/app.js"></script>
   </body>
 </html>

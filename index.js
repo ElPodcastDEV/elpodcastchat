@@ -1,10 +1,15 @@
 const { resolve } = require('path')
-const app = require('express')()
-const http = require('http').createServer(app)
-const io = require('socket.io')(http)
+const express = require('express')
+const Http = require('http')
+const Io = require('socket.io')
 
-http.listen(process.env.PORT || 3200, function () {
-  console.log('listening on *:3200')
+const app = express()
+const http = Http.createServer(app)
+const io = Io(http)
+const port = process.env.PORT || 3200
+
+http.listen(port, function () {
+  console.log(`listening on *:${port}`)
 })
 
 io.on('connection', socket => {
@@ -13,6 +18,8 @@ io.on('connection', socket => {
     io.emit('chat message', msg)
   })
 })
+
+app.use(express.static('assets'))
 
 app.get('/', (req, res) => {
   res.sendFile(resolve(__dirname, './index.html'))
