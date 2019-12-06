@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
         this.player.play()
       },
       mute () {
-        this.volume = this.volume === 0 ? 100 : 0
+        this.volume = parseInt(this.volume, 10) === 0 ? 100 : 0
       }
     },
     mounted () {

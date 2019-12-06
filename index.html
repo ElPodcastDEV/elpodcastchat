@@ -16,8 +16,8 @@
           <i class="material-icons" @click="playPause" v-show="!isPlaying">play_arrow</i>
           <i class="material-icons" @click="playPause" v-show="isPlaying">pause</i>
           <input type="range" min="0" max="100" v-model="volume" />
-          <i class="material-icons" @click="mute" v-show="volume!==0">volume_up</i>
-          <i class="material-icons" @click="mute" v-show="volume===0">volume_off</i>
+          <i class="material-icons" @click="mute" v-show="parseInt(volume, 10)!==0">volume_up</i>
+          <i class="material-icons" @click="mute" v-show="parseInt(volume, 10)===0">volume_off</i>
           <audio controls ref="elPlayer">
             {{vol}}
             <!-- <source src="https://www.myinstants.com/media/sounds/trollolol.swf.mp3" type="audio/mp3"> -->
@@ -37,10 +37,6 @@
       </div>
       <form @submit.prevent="submit" class="elform" v-if="username">
         {{username}}<input id="m" autocomplete="off" v-model="message" placeholder="Mensage" /><button>Send</button>
-      </form>
-      <form @submit.prevent="setName" class="elform" v-if="!username">
-        Cual es tu nombre?
-        <input id="m" autocomplete="off" v-model="nickname" placeholder="Tu nickname" /><button>Entrar</button>
       </form>
     </section>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
