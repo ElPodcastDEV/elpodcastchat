@@ -2,18 +2,17 @@
   "name": "podcastlive",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:dev": "nodemon server/index.js",
+    "start:prod": "forever -c 'node --harmony' server/index.js"
   },
   "author": "",
   "license": "GPL-2.0-only",
   "dependencies": {
     "express": "^4.17.1",
-    "socket.io": "^2.3.0"
-  },
-  "devDependencies": {
+    "redis": "^2.8.0",
+    "socket.io": "^2.3.0",
     "standard": "^14.3.1"
   }
 }

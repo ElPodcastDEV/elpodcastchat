@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
       setName () {
         this.username = this.nickname
         this.localStorage.username = this.username
-        localStorage.data = JSON.stringify(this.localStorage)
+        this.saveData()
       },
       submit () {
         this.socket.emit('chat message', `${this.username}: ${this.message}`)
@@ -34,12 +34,12 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       clearChat () {
         delete this.localStorage.pastMsgs
-        localStorage.data = JSON.stringify(this.localStorage)
+        this.saveData()
         window.location.href = (() => window.location.href)()
       },
       logout () {
         delete this.localStorage.username
-        localStorage.data = JSON.stringify(this.localStorage)
+        this.saveData()
         window.location.href = (() => window.location.href)()
       },
       playPause () {
@@ -53,12 +53,19 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       mute () {
         this.volume = parseInt(this.volume, 10) === 0 ? 100 : 0
+      },
+      saveData () {
+        localStorage.data = JSON.stringify(this.localStorage)
       }
     },
     mounted () {
       this.player = this.$refs.elPlayer
       const { username, pastMsgs } = this.localStorage
-      if (username) this.username = username
+      if (!username) {
+        this.localStorage.username = faker.internet.userName()
+        this.saveData()
+      }
+      this.username = this.localStorage.username
       if (pastMsgs) this.messages = pastMsgs
       this.socket.on('chat message', msg => {
         this.messages.unshift(msg)

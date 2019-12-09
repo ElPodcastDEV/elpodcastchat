@@ -3,6 +3,9 @@
   <head>
     <title>El Podcast DEV [LIVE]</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/faker@3.1.0/build/build/faker.min.js"></script>
     <link rel="stylesheet" href="/styles/styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
@@ -19,10 +22,8 @@
           <i class="material-icons" @click="mute" v-show="parseInt(volume, 10)!==0">volume_up</i>
           <i class="material-icons" @click="mute" v-show="parseInt(volume, 10)===0">volume_off</i>
           <audio controls ref="elPlayer">
-            {{vol}}
-            <!-- <source src="https://www.myinstants.com/media/sounds/trollolol.swf.mp3" type="audio/mp3"> -->
             <source src="http://188.165.240.90:8292/stream" type="audio/mp3">
-            Your browser does not support the audio tag.
+            Your browser does not support the audio tag. {{vol}}
           </audio>
         </div>
         <div class="opts">
@@ -35,12 +36,10 @@
           <div class="message" v-for="message in messages">{{message}}</div>
         </div>
       </div>
-      <form @submit.prevent="submit" class="elform" v-if="username">
+      <form @submit.prevent="submit" class="elform">
         {{username}}<input id="m" autocomplete="off" v-model="message" placeholder="Mensage" /><button>Send</button>
       </form>
     </section>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="/scripts/app.js"></script>
   </body>
 </html>

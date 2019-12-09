@@ -1,0 +1,18 @@
+version: '3.1'
+services:
+  chat-app:
+    depends_on:
+      - redis
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    build: .
+    command: npm run start:prod
+    volumes:
+      - .:/usr/app
+      - /usr/app/node_modules
+    ports:
+      - 3200:80
+  redis:
+    image: redis:5.0.7-alpine
