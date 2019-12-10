@@ -33,8 +33,8 @@ io.on('connection', socket => {
       broadcastSystem(`${socket.userName} se ha ido`)
     }
   })
-  socket.on('chat message', msg => {
-    const { message } = JSON.parse(msg)
+  socket.on('chat message', async msg => {
+    const { username, message } = JSON.parse(msg)
     if (message[0] === '/') return tryCommands(message, socket)
     if (socket.reclaiming) {
       sendSystem(
@@ -43,6 +43,23 @@ io.on('connection', socket => {
       )
       return
     }
+
+    if (username === '!blobImg!') {
+      const perm = await brain.hget(
+        socket.userName, 'permissions'
+      ) || JSON.stringify({})
+      const { isAdmin } = JSON.parse(perm)
+      if (isAdmin) {
+        io.emit('chat message', msg)
+      } else {
+        sendSystem(
+          socket,
+          'Solo los admins pueden mandar imágenes'
+        )
+      }
+      return
+    }
+
     io.emit('chat message', msg)
   })
   socket.on('userNameChange', msg => {
