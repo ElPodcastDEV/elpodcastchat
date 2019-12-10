@@ -12,7 +12,6 @@ class Bot {
         const token = this.auth.generateToken({ userName: socket.userName })
         await this.brain.hset(socket.userName, 'password', password)
         await this.brain.hset(socket.userName, 'email', email)
-        this.brain.hset(socket.userName, 'token', token)
         this.sendSystemData(socket, 'token', token)
         this.sendSystem(socket, 'Listo, puedes reclamar este nick usando /password <password>')
       },
@@ -29,8 +28,18 @@ class Bot {
             }
           })
           const token = this.auth.generateToken({ userName: socket.userName })
-          this.brain.hset(socket.userName, 'token', token)
           this.sendSystem(socket, 'Listo ya puedes escribir')
+          this.sendSystemData(socket, 'token', token)
+          return
+        }
+        this.sendSystem(socket, 'Password incorrecto')
+      },
+      '/changePassword': async (socket, [password, newPass]) => {
+        const data = await this.brain.hget(socket.userName, 'password')
+        if (data === password) {
+          const token = this.auth.generateToken({ userName: socket.userName })
+          this.sendSystem(socket, 'Contraseña actualizada')
+          await this.brain.hset(socket.userName, 'password', newPass)
           this.sendSystemData(socket, 'token', token)
           return
         }
