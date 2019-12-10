@@ -57,11 +57,13 @@ class Bot {
     }
   }
   on (command, socket, params) {
+    if (!this.commands[command])
+      return this.sendSystem(socket, `command ${command} no existe`)
     this.commands[command](socket, params)
   }
   sendSystem (socket, message) {
     socket.emit('chat message', JSON.stringify({
-      username: 'SYSTEM',
+      username: '[SYSTEM]',
       message
     }))
   }

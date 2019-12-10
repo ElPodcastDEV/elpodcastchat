@@ -4,14 +4,11 @@ let brain = null
 let bot = null
 
 const sendSystem = (socket, message) => {
-  socket.emit('chat message', JSON.stringify({
-    username: 'SYSTEM',
-    message
-  }))
+  bot.sendSystem(socket, message)
 }
 
 const sendRegister = (socket, currentUser) => {
-  sendSystem(socket, [
+  bot.sendSystem(socket, [
     `Este username (${currentUser}) NO está registrado`,
     'Si quieres registrarlo, manda',
     '/register <tu_password> <tu_email>',
@@ -19,7 +16,7 @@ const sendRegister = (socket, currentUser) => {
 }
 
 const sendReclaim = (socket, currentUser) => {
-  sendSystem(socket, [
+  bot.sendSystem(socket, [
     `Este username (${currentUser}) ya está registrado en el chat.`,
     'Si tu eres quien lo registró,',
     'para reclamarlo, manda',

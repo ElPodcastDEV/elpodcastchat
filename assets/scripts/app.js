@@ -1,6 +1,9 @@
 /* globals Vue localStorage io window */
 
 document.addEventListener('DOMContentLoaded', function () {
+  Vue.config.keyCodes = {
+    'arrow-keys': [38, 40]
+  }
   const vue = new Vue({
     el: '#app',
     data: {
@@ -8,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
       socket: io(),
       // messages: [...new Array(50)].map((i, k) => `${k} Zero: TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest`),
       messages: [],
+      history: [],
+      historyKey: 0,
       username: null,
       localStorage: JSON.parse(localStorage.data || '{}'),
       volume: 100,
@@ -15,7 +20,10 @@ document.addEventListener('DOMContentLoaded', function () {
       isPlaying: false,
       status: '',
       statusTimer: null,
-      loginUserName: null
+      loginUserName: null,
+      tmpImg: null,
+      images: [],
+      displayImage: null
     },
     computed: {
       vol () {
@@ -33,6 +41,8 @@ document.addEventListener('DOMContentLoaded', function () {
             message: this.message
           })
         )
+        this.history.unshift(this.message)
+        this.historyKey = -1
         this.message = ''
       },
       clearChat () {
@@ -79,6 +89,39 @@ document.addEventListener('DOMContentLoaded', function () {
         this.statusTimer = setTimeout(() => {
           this.getStatus()
         }, 5000);
+      },
+      navigateHistory (evt) {
+        this.historyKey = evt.keyCode === 38
+          ? this.historyKey += 1
+          : this.historyKey -= 1
+        if (this.historyKey < -1) this.historyKey = -1
+        if (this.historyKey > this.history.length -1)
+          this.historyKey = this.history.length -1
+        this.message = this.history[this.historyKey]
+      },
+      pasting (evt) {
+        var items = (event.clipboardData || event.originalEvent.clipboardData).items
+        for (index in items) {
+          var item = items[index]
+          if (item.kind === 'file') {
+            var blob = item.getAsFile()
+            var reader = new FileReader()
+            reader.onload = event => {
+              this.tmpImg = event.target.result
+            }
+            reader.readAsDataURL(blob)
+          }
+        }
+      },
+      sendImg () {
+        this.socket.emit(
+          'chat message',
+          JSON.stringify({
+            username: '!blobImg!',
+            message: this.tmpImg
+          })
+        )
+        this.tmpImg = null
       }
     },
     mounted () {
@@ -95,6 +138,10 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       this.socket.on('chat message', msg => {
         const { username, message } = JSON.parse(msg)
+        if (username === '!blobImg!') {
+          this.images.unshift(message)
+          return
+        }
         this.messages.unshift(`${username}: ${message}`)
         this.localStorage.pastMsgs = this.messages
         localStorage.data = JSON.stringify(this.localStorage)

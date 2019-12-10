@@ -39,8 +39,37 @@
         </div>
       </div>
       <form @submit.prevent="submit" class="elform" v-if="username">
-        {{username}}<input id="m" autocomplete="off" v-model="message" placeholder="Mensage" /><button>Enviar</button>
+        {{username}}
+        <input
+          autocomplete="off"
+          v-model="message"
+          placeholder="Mensage"
+          @keyup.arrow-keys="navigateHistory"
+          @paste="pasting"
+        />
+        <button>Enviar</button>
       </form>
+      <div class="sendImg" v-if="tmpImg">
+        <img :src="tmpImg"/>
+        <div class="btns">
+          <div class="btn send" @click="sendImg">Enviar</div>
+          <div class="btn cancel" @click="tmpImg=null">Cancelar</div>
+        </div>
+      </div>
+      <div class="imagesHistory">
+        <img
+          :src="image"
+          v-for="image in images"
+          @click="displayImage = image"
+        />
+      </div>
+      <div class="modal" v-if="displayImage" @click="displayImage=null">
+        <div class="background"></div>
+        <img
+          class="loginWindow"
+          :src="displayImage"
+        />
+      </div>
       <div class="modal" v-if="!username"><div class="background"></div>
         <form @submit.prevent="setUsername" class="loginWindow">
           Por favor indica tu nombre de usuario

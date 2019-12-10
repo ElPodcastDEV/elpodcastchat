@@ -51,17 +51,6 @@ io.on('connection', socket => {
     if (token) {
       validateToken(socket, token)
     }
-    // if (prev === undefined) {
-    //   io.emit('chat message', JSON.stringify({
-    //     username: 'SYSTEM',
-    //     message: `${current} ha llegado`
-    //   }))
-    // } else {
-    //   io.emit('chat message', JSON.stringify({
-    //     username: 'SYSTEM',
-    //     message: `A ${prev} Ahora le dicen: ${current}`
-    //   }))
-    // }
   })
 })
 
