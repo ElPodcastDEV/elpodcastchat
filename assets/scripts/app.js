@@ -34,6 +34,8 @@ document.addEventListener('DOMContentLoaded', function () {
     },
     methods: {
       submit () {
+        const message = this.message.trim()
+        if (message === '') return
         this.socket.emit(
           'chat message',
           JSON.stringify({
@@ -74,7 +76,11 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       setUsername () {
         const prev = this.oldUsername
-        this.username = this.loginUserName
+        this.username = this.loginUserName.trim()
+        if (this.username === '') {
+          this.username = null
+          return
+        }
         this.localStorage.username = this.username
         this.saveData()
         this.socket.emit('userNameChange', JSON.stringify({
