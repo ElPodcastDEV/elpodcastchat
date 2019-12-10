@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
           this.images.unshift(message)
           return
         }
-        this.messages.unshift(`${username}: ${message}`)
+        this.messages.unshift({username, message})
         this.localStorage.pastMsgs = this.messages
         localStorage.data = JSON.stringify(this.localStorage)
       })

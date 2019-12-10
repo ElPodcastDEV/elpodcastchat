@@ -15,11 +15,11 @@ services:
       - .:/usr/app
       - /usr/app/node_modules
     ports:
-      - 3200:80
+      - ${PORT:-3200}:80
     links:
       - redis
 
   redis:
     image: redis:5.0.7-alpine
     ports:
-      - 6379:6379
+      - ${REDISPORT:-6379}:6379

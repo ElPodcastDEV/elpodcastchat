@@ -35,7 +35,9 @@
       </header>
       <div class="messages">
         <div class="messagesHolder">
-          <div class="message" v-for="message in messages">{{message}}</div>
+          <div :class="'message ' + itm.username" v-for="itm in messages">
+            <span v-if="itm.username !== 'SYSTEM'">{{itm.username}}: </span>{{itm.message}}
+          </div>
         </div>
       </div>
       <form @submit.prevent="submit" class="elform" v-if="username">

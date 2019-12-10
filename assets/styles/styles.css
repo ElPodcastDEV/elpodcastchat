@@ -53,16 +53,19 @@ form button {
   display: flex;
   flex-direction: column-reverse;
 }
-.messages .message:nth-child(even) {
-  background-color: var(--bgdarker);
-}
 .messages .message {
-  min-height: 40px;
-  padding: 4px 10px;
+  padding: 0 10px;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: flex;
-  align-items: center;
+  line-height: 1.3em;
+  min-height: 1.3em;
+}
+.messages .message.SYSTEM {
+  opacity: 0.5;
+  font-size: 0.8em;
+  line-height: 1.1em;
+  min-height: 1.1em;
+  font-style: italic;
 }
 .messagesHolder {
   height: 100%;
@@ -126,6 +129,8 @@ form button {
   position: relative;
   max-width: 90%;
   max-height: 90%;
+}
+.modal img {
   box-shadow: 0 0 10px 0 var(--bgdarker);
 }
 .modal input {

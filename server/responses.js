@@ -6,22 +6,20 @@ let bot = null
 const sendSystem = (socket, message) => {
   bot.sendSystem(socket, message)
 }
+const broadcastSystem = (socket, message) => {
+  bot.broadcastSystem(socket, message)
+}
 
 const sendRegister = (socket, currentUser) => {
-  bot.sendSystem(socket, [
-    `Este username (${currentUser}) NO está registrado`,
-    'Si quieres registrarlo, manda',
-    '/register <tu_password> <tu_email>',
-  ].join(' '))
+  bot.sendSystem(socket, `Este username (${currentUser}) NO está registrado`)
+  bot.sendSystem(socket, 'Si quieres registrarlo, manda')
+  bot.sendSystem(socket, '/register <tu_password> <tu_email>')
 }
 
 const sendReclaim = (socket, currentUser) => {
-  bot.sendSystem(socket, [
-    `Este username (${currentUser}) ya está registrado en el chat.`,
-    'Si tu eres quien lo registró,',
-    'para reclamarlo, manda',
-    '/password <tu_password>'
-  ].join(' '))
+  bot.sendSystem(socket, `Este username (${currentUser}) ya está registrado en el chat.`)
+  bot.sendSystem(socket, 'Si tu eres quien lo registró, puedes reclamar el username mandando:')
+  bot.sendSystem(socket, '/password <tu_password>')
 }
 
 const validateNewUser = async (socket, currentUser) => {
@@ -52,6 +50,7 @@ const tryCommands = (message, socket) => {
 
 module.exports = {
   sendSystem,
+  broadcastSystem,
   sendRegister,
   sendReclaim,
   validateNewUser,

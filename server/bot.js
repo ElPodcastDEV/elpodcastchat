@@ -13,7 +13,10 @@ class Bot {
         await this.brain.hset(socket.userName, 'password', password)
         await this.brain.hset(socket.userName, 'email', email)
         this.sendSystemData(socket, 'token', token)
-        this.sendSystem(socket, 'Listo, puedes reclamar este nick usando /password <password>')
+        this.sendSystem(socket, 'Listo')
+        this.sendSystem(socket, 'Ahora reclama tu username mandando el comando')
+        this.sendSystem(socket, '/password <password>')
+        this.sendSystem(socket, 'y así nadie más lo podrá usar hasta que te vayas')
       },
       '/password': async (socket, [password]) => {
         const data = await this.brain.hget(socket.userName, 'password')
@@ -23,7 +26,9 @@ class Bot {
           const otherUsers = []
           Object.keys(sockets.connected).forEach(id => {
             const connectedSocket = sockets.connected[id]
-            if (connectedSocket.id !== socket.id) {
+            const [connId, connUser] = [connectedSocket.id, connectedSocket.userName]
+            const [soId, soUser] = [socket.id, socket.userName]
+            if (connId !== soId && connUser === soUser) {
               connectedSocket.reclaiming = true
             }
           })
@@ -63,7 +68,13 @@ class Bot {
   }
   sendSystem (socket, message) {
     socket.emit('chat message', JSON.stringify({
-      username: '[SYSTEM]',
+      username: 'SYSTEM',
+      message
+    }))
+  }
+  broadcastSystem (message) {
+    this.io.emit('chat message', JSON.stringify({
+      username: 'SYSTEM',
       message
     }))
   }

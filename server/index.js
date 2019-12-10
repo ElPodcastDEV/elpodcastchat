@@ -6,6 +6,7 @@ const Brain = require('./brain')
 const getStatus = require('./shoutcast')
 const {
   sendSystem,
+  broadcastSystem,
   validateNewUser,
   validateToken,
   tryCommands,
@@ -27,7 +28,10 @@ http.listen(port, async () => {
 io.on('connection', socket => {
   socket.on('disconnect', async () => {
     if (socket.reclaiming) return
-    if (socket.userName) await brain.hset(socket.userName, 'online', false)
+    if (socket.userName) {
+      await brain.hset(socket.userName, 'online', false)
+      broadcastSystem(`${socket.userName} se ha ido`)
+    }
   })
   socket.on('chat message', msg => {
     const { message } = JSON.parse(msg)
@@ -45,11 +49,15 @@ io.on('connection', socket => {
     const { prev, current, token } = JSON.parse(msg)
     if (!socket.reclaiming && socket.userName) {
       brain.hset(socket.userName, 'online', false)
+      broadcastSystem(`${socket.userName} se ha ido`)
     }
     socket.reclaiming = false
     validateNewUser(socket, current)
     if (token) {
       validateToken(socket, token)
+      broadcastSystem(`${socket.userName} se ha unido!`)
+    } else if (!socket.reclaiming) {
+      broadcastSystem(`${socket.userName} se ha unido!`)
     }
   })
 })
