@@ -4,7 +4,7 @@ class Bot {
   constructor (inputBrain, io) {
     this.brain = inputBrain
     this.io = io
-    this.auth = new Auth({secret: 'mi turbo secret'})
+    this.auth = new Auth({secret: process.env.SECRET})
     this.commands = {
       '/register': async (socket, [password, email]) => {
         const data = await this.brain.hget(socket.userName, 'email')

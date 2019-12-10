@@ -7,8 +7,10 @@ services:
       driver: "json-file"
       options:
         max-size: "50m"
+    environment:
+      - SECRET=${SECRET:-my-awesome-secret}
     build: .
-    command: npm run start:dev
+    command: npm run start:${ENV:-dev}
     volumes:
       - .:/usr/app
       - /usr/app/node_modules
@@ -16,7 +18,7 @@ services:
       - 3200:80
     links:
       - redis
-    
+
   redis:
     image: redis:5.0.7-alpine
     ports:
