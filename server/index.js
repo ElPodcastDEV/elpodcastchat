@@ -4,6 +4,13 @@ const Http = require('http')
 const Io = require('socket.io')
 const Brain = require('./brain')
 const getStatus = require('./shoutcast')
+const {
+  sendSystem,
+  validateNewUser,
+  validateToken,
+  tryCommands,
+  initializeBrain
+} = require('./responses')
 
 const app = express()
 const http = Http.createServer(app)
@@ -11,14 +18,50 @@ const io = Io(http)
 const port = 80
 const brain = new Brain()
 
+initializeBrain(brain, io)
+
 http.listen(port, async () => {
   console.log(`listening on *:${port}`)
 })
 
 io.on('connection', socket => {
-  socket.on('disconnect', () => {})
+  socket.on('disconnect', async () => {
+    if (socket.reclaiming) return
+    if (socket.userName) await brain.hset(socket.userName, 'online', false)
+  })
   socket.on('chat message', msg => {
+    const { message } = JSON.parse(msg)
+    if (message[0] === '/') return tryCommands(message, socket)
+    if (socket.reclaiming) {
+      sendSystem(
+        socket,
+        'Actualmente no puedes mandar mensajes, hasta que cambies de nick o lo reclames'
+      )
+      return
+    }
     io.emit('chat message', msg)
+  })
+  socket.on('userNameChange', msg => {
+    const { prev, current, token } = JSON.parse(msg)
+    if (!socket.reclaiming && socket.userName) {
+      brain.hset(socket.userName, 'online', false)
+    }
+    socket.reclaiming = false
+    validateNewUser(socket, current)
+    if (token) {
+      validateToken(socket, token)
+    }
+    // if (prev === undefined) {
+    //   io.emit('chat message', JSON.stringify({
+    //     username: 'SYSTEM',
+    //     message: `${current} ha llegado`
+    //   }))
+    // } else {
+    //   io.emit('chat message', JSON.stringify({
+    //     username: 'SYSTEM',
+    //     message: `A ${prev} Ahora le dicen: ${current}`
+    //   }))
+    // }
   })
 })
 

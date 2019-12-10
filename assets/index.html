@@ -5,7 +5,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/faker@3.1.0/build/build/faker.min.js"></script>
     <link rel="stylesheet" href="/styles/styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
@@ -16,15 +15,18 @@
           <img src="https://cdn.simplecast.com/images/20122399-3919-4089-b540-10f66a258c04/8734f16b-187a-41cb-9a6f-34ff0f2ee6c5/640x640/1551986909artwork.jpg" />
         </span>
         <div class="audio">
-          <i class="material-icons" @click="playPause" v-show="!isPlaying">play_arrow</i>
-          <i class="material-icons" @click="playPause" v-show="isPlaying">pause</i>
-          <input type="range" min="0" max="100" v-model="volume" />
-          <i class="material-icons" @click="mute" v-show="parseInt(volume, 10)!==0">volume_up</i>
-          <i class="material-icons" @click="mute" v-show="parseInt(volume, 10)===0">volume_off</i>
-          <audio controls ref="elPlayer">
-            <source src="http://188.165.240.90:8292/stream" type="audio/mp3">
-            Your browser does not support the audio tag. {{vol}}
-          </audio>
+          <div class="player">
+            <i class="material-icons" @click="playPause" v-show="!isPlaying">play_arrow</i>
+            <i class="material-icons" @click="playPause" v-show="isPlaying">pause</i>
+            <input type="range" min="0" max="100" v-model="volume" />
+            <i class="material-icons" @click="mute" v-show="parseInt(volume, 10)!==0">volume_up</i>
+            <i class="material-icons" @click="mute" v-show="parseInt(volume, 10)===0">volume_off</i>
+            <audio controls ref="elPlayer">
+              <source src="http://188.165.240.90:8292/stream" type="audio/mp3">
+              Your browser does not support the audio tag. {{vol}}
+            </audio>
+          </div>
+          <span class="status">{{status}}</span>
         </div>
         <div class="opts">
           <i class="material-icons" @click="logout" v-show="username">exit_to_app</i>
@@ -36,9 +38,17 @@
           <div class="message" v-for="message in messages">{{message}}</div>
         </div>
       </div>
-      <form @submit.prevent="submit" class="elform">
-        {{username}}<input id="m" autocomplete="off" v-model="message" placeholder="Mensage" /><button>Send</button>
+      <form @submit.prevent="submit" class="elform" v-if="username">
+        {{username}}<input id="m" autocomplete="off" v-model="message" placeholder="Mensage" /><button>Enviar</button>
       </form>
+      <div class="modal" v-if="!username"><div class="background"></div>
+        <form @submit.prevent="setUsername" class="loginWindow">
+          Por favor indica tu nombre de usuario
+          <div>
+            <input v-model="loginUserName" /><button>Entrar</button>
+          </div>
+        </form>
+      </div>
     </section>
     <script src="/scripts/app.js"></script>
   </body>

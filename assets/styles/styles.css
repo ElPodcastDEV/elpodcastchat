@@ -32,15 +32,17 @@ body {
 .elform span {
   cursor: pointer;
 }
-.elform input {
+form input {
   border: 0;
   padding: 10px;
   flex-grow: 1;
   margin: 0 10px;
 }
-.elform button {
+form button {
   border: none;
   padding: 10px;
+  background-color: var(--bgdarker);
+  color: var(--foreground);
 }
 .messages {
   max-width: 100vw;
@@ -90,10 +92,46 @@ body {
 }
 .audio {
   display: flex;
+  flex-direction: column;
   align-items: center;
+}
+.audio .player {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.audio .status {
+  font-size: 0.8em;
 }
 .audio audio {
   display: none;
+}
+
+.modal, .modal .background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal .background {
+  background-color: var(--background);
+  opacity: 0.6;
+}
+.modal .loginWindow {
+  position: relative;
+}
+.modal input {
+  margin-left: 0;
+}
+.modal .loginWindow div {
+  display: flex;
+  margin-top: 10px;
 }
 
 ::-webkit-scrollbar {
@@ -113,7 +151,7 @@ input[type=range] {
   width: 100px;
   cursor: pointer;
   --thumbWidth: 16px;
-  --thumbHeight: 36px;
+  --thumbHeight: 30px;
   --trackHeight: 8px;
 }
 input[type=range]::-webkit-slider-runnable-track {
@@ -129,7 +167,10 @@ input[type=range]::-webkit-slider-thumb {
   border-radius: 3px;
   background: var(--background);
   -webkit-appearance: none;
-  margin-top: -14px;
+  margin-top: calc(
+    -1 *
+    calc(var(--thumbHeight) - calc(var(--thumbHeight) / 1.6))
+  );
   transition: background-color 500ms linear;
 }
 input[type=range]:hover::-webkit-slider-thumb {

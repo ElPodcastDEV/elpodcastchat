@@ -9,11 +9,13 @@ document.addEventListener('DOMContentLoaded', function () {
       // messages: [...new Array(50)].map((i, k) => `${k} Zero: TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest`),
       messages: [],
       username: null,
-      nickname: '',
       localStorage: JSON.parse(localStorage.data || '{}'),
       volume: 100,
       player: {},
-      isPlaying: false
+      isPlaying: false,
+      status: '',
+      statusTimer: null,
+      loginUserName: null
     },
     computed: {
       vol () {
@@ -23,24 +25,27 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     },
     methods: {
-      setName () {
-        this.username = this.nickname
-        this.localStorage.username = this.username
-        this.saveData()
-      },
       submit () {
-        this.socket.emit('chat message', `${this.username}: ${this.message}`)
+        this.socket.emit(
+          'chat message',
+          JSON.stringify({
+            username: this.username,
+            message: this.message
+          })
+        )
         this.message = ''
       },
       clearChat () {
         delete this.localStorage.pastMsgs
+        this.messages = []
         this.saveData()
-        window.location.href = (() => window.location.href)()
       },
       logout () {
         delete this.localStorage.username
+        delete this.localStorage.token
+        this.oldUsername = this.username
+        this.username = null
         this.saveData()
-        window.location.href = (() => window.location.href)()
       },
       playPause () {
         if (this.isPlaying) {
@@ -56,21 +61,48 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       saveData () {
         localStorage.data = JSON.stringify(this.localStorage)
+      },
+      setUsername () {
+        const prev = this.oldUsername
+        this.username = this.loginUserName
+        this.localStorage.username = this.username
+        this.saveData()
+        this.socket.emit('userNameChange', JSON.stringify({
+          prev, current: this.username
+        }))
+      },
+      async getStatus () {
+        if (this.statusTimer) clearTimeout(this.statusTimer)
+        const response = await fetch('/status')
+        const json = await response.json()
+        this.status = json.status
+        this.statusTimer = setTimeout(() => {
+          this.getStatus()
+        }, 5000);
       }
     },
     mounted () {
+      this.getStatus()
       this.player = this.$refs.elPlayer
-      const { username, pastMsgs } = this.localStorage
-      if (!username) {
-        this.localStorage.username = faker.internet.userName()
-        this.saveData()
-      }
-      this.username = this.localStorage.username
+      const { username, pastMsgs, token } = this.localStorage
       if (pastMsgs) this.messages = pastMsgs
+      if (username) {
+        this.username = username
+        this.socket.emit('userNameChange', JSON.stringify({
+          current: this.username,
+          token
+        }))
+      }
       this.socket.on('chat message', msg => {
-        this.messages.unshift(msg)
+        const { username, message } = JSON.parse(msg)
+        this.messages.unshift(`${username}: ${message}`)
         this.localStorage.pastMsgs = this.messages
         localStorage.data = JSON.stringify(this.localStorage)
+      })
+      this.socket.on('system message', msg => {
+        const { key, value } = JSON.parse(msg)
+        this.localStorage[key] = value
+        this.saveData()
       })
     }
   })

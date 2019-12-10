@@ -15,8 +15,7 @@ const getStatus = url => {
         const res = [...data]
           .slice(init + lowerDel.length, end)
           .join('')
-          .split('of')
-        return resolve(res[0] + 'listeners')
+        return resolve(res)
       })
 
     }).on("error", (err) => {
