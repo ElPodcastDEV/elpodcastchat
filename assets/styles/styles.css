@@ -75,6 +75,7 @@ form button {
   line-height: 1.1em;
   min-height: 1.1em;
   font-style: italic;
+  text-align: right;
 }
 .messagesHolder {
   height: 100%;
@@ -162,6 +163,7 @@ form button {
   border-radius: 4px;
   background-color: var(--bgdarker);
   border: 1px solid var(--foreground);
+  cursor: pointer;
 }
 .sendImg .btns {
   display: flex;

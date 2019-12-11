@@ -146,6 +146,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const { username, message } = JSON.parse(msg)
         if (username === '!blobImg!') {
           this.images.unshift(message)
+          this.messages.unshift({
+            username: 'SYSTEM',
+            message: 'Nueva imagen compartida ------------------------>'
+          })
           return
         }
         this.messages.unshift({username, message})
