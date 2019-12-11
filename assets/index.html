@@ -33,6 +33,13 @@
           <i class="material-icons" @click="clearChat">clear</i>
         </div>
       </header>
+      <div class="interest">
+        <a target="_blank" href="https://elpodcast.dev">ElPodcast.DEV</a>&nbsp;|&nbsp;
+        <a target="_blank" href="https://twitter.com/_elpodcast">@_elpodcast</a>&nbsp;|&nbsp;
+        <a target="_blank" href="https://twitter.com/swanros">@swanros</a>&nbsp;|&nbsp;
+        <a target="_blank" href="https://twitter.com/zerodragon">@zerodragon</a>&nbsp;|&nbsp;
+        <a target="_blank" href="https://www.patreon.com/elpodcastdev">El Patreon</a>
+      </div>
       <div class="messages">
         <div class="messagesHolder">
           <div :class="'message ' + itm.username" v-for="itm in messages">

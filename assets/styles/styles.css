@@ -18,8 +18,8 @@ body {
 }
 .app {
   display: grid;
-  grid-template-areas: "header" "messages" "form";
-  grid-template-rows: 70px calc(100% - 50px) 50px;
+  grid-template-areas: "header" "interest" "messages" "form";
+  grid-template-rows: 70px 30px calc(100% - 80px) 50px;
   grid-template-columns: 1fr;
   height: calc(100% - 50px);
 }
@@ -31,6 +31,15 @@ body {
 }
 .elform span {
   cursor: pointer;
+}
+.interest {
+  grid-area: interest;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.interest a {
+  color: var(--foreground)
 }
 form input {
   border: 0;
