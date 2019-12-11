@@ -7,6 +7,12 @@ class Bot {
     this.auth = new Auth({secret: process.env.SECRET})
     this.commands = {
       '/register': async (socket, [password, email]) => {
+        if (!password || !email) {
+          this.sendSystem(socket, 'debes especificar un password y email')
+          this.sendSystem(socket, '/register tupassword tuemail')
+          this.sendSystem(socket, '(sin espacios el password o email)')
+          return
+        }
         const data = await this.brain.hget(socket.userName, 'email')
         if (data) return this.sendSystem(socket, 'Este username ya está registrado')
         const token = this.auth.generateToken({ userName: socket.userName })

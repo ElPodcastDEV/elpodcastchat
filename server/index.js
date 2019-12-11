@@ -62,14 +62,14 @@ io.on('connection', socket => {
 
     io.emit('chat message', msg)
   })
-  socket.on('userNameChange', msg => {
+  socket.on('userNameChange', async msg => {
     const { prev, current, token } = JSON.parse(msg)
     if (!socket.reclaiming && socket.userName) {
       brain.hset(socket.userName, 'online', false)
       broadcastSystem(`${socket.userName} se ha ido`)
     }
     socket.reclaiming = false
-    validateNewUser(socket, current)
+    await validateNewUser(socket, current)
     if (token) {
       validateToken(socket, token)
       broadcastSystem(`${socket.userName} se ha unido!`)

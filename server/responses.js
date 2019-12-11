@@ -14,6 +14,7 @@ const sendRegister = (socket, currentUser) => {
   bot.sendSystem(socket, `Este username (${currentUser}) NO está registrado`)
   bot.sendSystem(socket, 'Si quieres registrarlo, manda')
   bot.sendSystem(socket, '/register <tu_password> <tu_email>')
+  return true
 }
 
 const sendReclaim = (socket, currentUser) => {
@@ -32,10 +33,10 @@ const validateNewUser = async (socket, currentUser) => {
       await brain.hset(currentUser, 'online', true)
     }
     if (!userData.email) return sendRegister(socket, currentUser)
-    sendReclaim(socket, currentUser)
+    return sendReclaim(socket, currentUser)
   } else {
-    sendRegister(socket, currentUser)
     await brain.hset(currentUser, 'online', true)
+    return sendRegister(socket, currentUser)
   }
 }
 
