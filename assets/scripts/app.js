@@ -165,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
           token
         })
       }
+      this.clearChat()
       this.socket.on('chat message', msg => {
         const { messageType, username, message, uid, msgId } = JSON.parse(msg)
         if (messageType === 'sendImage') {
