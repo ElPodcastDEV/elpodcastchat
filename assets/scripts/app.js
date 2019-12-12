@@ -36,11 +36,13 @@ document.addEventListener('DOMContentLoaded', function () {
       submit () {
         const message = this.message.trim()
         if (message === '') return
+        const { token } = this.localStorage
         this.socket.emit(
           'chat message',
           JSON.stringify({
             username: this.username,
-            message: this.message
+            message: this.message,
+            token
           })
         )
         this.history.unshift(this.message)
@@ -86,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
         this.socket.emit('userNameChange', JSON.stringify({
           prev, current: this.username
         }))
+        setTimeout(() => { this.toText() }, 1)
       },
       async getStatus () {
         if (this.statusTimer) clearTimeout(this.statusTimer)
@@ -128,6 +131,18 @@ document.addEventListener('DOMContentLoaded', function () {
           })
         )
         this.tmpImg = null
+      },
+      toText () {
+        this.$refs.textInput.focus()
+      },
+      clearMessage (msgId) {
+        this.messages = this.messages.filter(m => m.uid !== msgId)
+        this.localStorage.pastMsgs = this.messages
+        this.saveData()
+        const { token } = this.localStorage
+        this.socket.emit('deleteMessage', JSON.stringify({
+          msgId, token
+        }))
       }
     },
     mounted () {
@@ -143,16 +158,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }))
       }
       this.socket.on('chat message', msg => {
-        const { username, message } = JSON.parse(msg)
+        const { username, message, uid } = JSON.parse(msg)
         if (username === '!blobImg!') {
-          this.images.unshift(message)
-          this.messages.unshift({
-            username: 'SYSTEM',
-            message: 'Nueva imagen compartida ------------------------>'
-          })
+          this.images.unshift({blob: message, uid})
           return
         }
-        this.messages.unshift({username, message})
+        this.messages.unshift({username, message, uid})
         this.localStorage.pastMsgs = this.messages
         localStorage.data = JSON.stringify(this.localStorage)
       })
@@ -160,6 +171,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const { key, value } = JSON.parse(msg)
         this.localStorage[key] = value
         this.saveData()
+      })
+      this.socket.on('deleteMessage', msgId => {
+        this.clearMessage(msgId)
       })
     }
   })

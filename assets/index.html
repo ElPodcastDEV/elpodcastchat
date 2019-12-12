@@ -6,7 +6,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <link rel="stylesheet" href="/styles/styles.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
   </head>
   <body>
     <section id="app" class="app">
@@ -16,11 +16,23 @@
         </span>
         <div class="audio">
           <div class="player">
-            <i class="material-icons" @click="playPause" v-show="!isPlaying">play_arrow</i>
-            <i class="material-icons" @click="playPause" v-show="isPlaying">pause</i>
-            <input type="range" min="0" max="100" v-model="volume" />
-            <i class="material-icons" @click="mute" v-show="parseInt(volume, 10)!==0">volume_up</i>
-            <i class="material-icons" @click="mute" v-show="parseInt(volume, 10)===0">volume_off</i>
+            <span class="toolTip bottom" v-show="!isPlaying">
+              <i class="material-icons" @click="playPause">play_arrow</i>
+              <span class="toolTipText">Play</span>
+            </span>
+            <span class="toolTip bottom" v-show="isPlaying">
+              <i class="material-icons" @click="playPause">pause</i>
+              <span class="toolTipText">Pausa</span>
+            </span>
+            <input type="range" min="0" max="100" v-model="volume"/>
+            <span class="toolTip bottom" v-show="parseInt(volume, 10)!==0">
+              <i class="material-icons" @click="mute" >volume_up</i>
+              <span class="toolTipText">Silenciar</span>
+            </span>
+            <span class="toolTip bottom" v-show="parseInt(volume, 10)===0">
+              <i class="material-icons" @click="mute">volume_off</i>
+              <span class="toolTipText">Activar Volumen</span>
+            </span>
             <audio controls ref="elPlayer">
               <source src="http://188.165.240.90:8292/stream" type="audio/mp3">
               Your browser does not support the audio tag. {{vol}}
@@ -29,8 +41,14 @@
           <span class="status">{{status}}</span>
         </div>
         <div class="opts">
-          <i class="material-icons" @click="logout" v-show="username">exit_to_app</i>
-          <i class="material-icons" @click="clearChat">clear</i>
+          <span class="toolTip left-bottom">
+            <i class="material-icons" @click="logout" v-show="username">exit_to_app</i>
+            <span class="toolTipText">Cambiar Nombre</span>
+          </span>
+          <span class="toolTip left-bottom">
+            <i class="material-icons" @click="clearChat">clear</i>
+            <span class="toolTipText">Borrar Chat</span>
+          </span>
         </div>
       </header>
       <div class="interest">
@@ -42,19 +60,24 @@
       </div>
       <div class="messages">
         <div class="messagesHolder">
-          <div :class="'message ' + itm.username" v-for="itm in messages">
+          <div
+            :key="itm.uid"
+            :class="'message ' + itm.username"
+            v-for="itm in messages"
+          >
             <span v-if="itm.username !== 'SYSTEM'">{{itm.username}}: </span>{{itm.message}}
+            <i class="material-icons" @click="clearMessage(itm.uid)">delete_forever</i>
           </div>
         </div>
       </div>
       <form @submit.prevent="submit" class="elform" v-if="username">
-        {{username}}
         <input
           autocomplete="off"
           v-model="message"
-          placeholder="Mensage"
+          :placeholder="username + ':'"
           @keyup.arrow-keys="navigateHistory"
           @paste="pasting"
+          ref="textInput"
         />
         <button>Enviar</button>
       </form>
@@ -67,12 +90,14 @@
       </div>
       <div class="imagesHistory">
         <img
-          :src="image"
+          :class="image.seen ? 'seen' : ''"
+          :src="image.blob"
+          :key="image.uid"
           v-for="image in images"
-          @click="displayImage = image"
+          @click="image.seen = true; displayImage = image.blob"
         />
       </div>
-      <div class="modal" v-if="displayImage" @click="displayImage=null">
+      <div class="modal" v-if="displayImage" @click="toText(); displayImage=null">
         <div class="background"></div>
         <img
           class="loginWindow"

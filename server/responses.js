@@ -43,6 +43,9 @@ const validateNewUser = async (socket, currentUser) => {
 const validateToken = async (socket, token) => {
   bot.on('/validateToken', socket, token)
 }
+const getTokenData = (socket, token) => {
+  bot.on('/getTokenData', socket, token)
+}
 
 const tryCommands = (message, socket) => {
   const [command, ...params] = message.split(' ')
@@ -56,6 +59,7 @@ module.exports = {
   sendReclaim,
   validateNewUser,
   validateToken,
+  getTokenData,
   tryCommands,
   initializeBrain: (inputBrain, io) => {
     brain = inputBrain

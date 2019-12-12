@@ -64,6 +64,14 @@ class Bot {
           const password = await this.brain.hget(socket.userName, 'password')
           this.on('/password', socket, [password])
         }
+      },
+      '/getTokenData': (socket, token) => {
+        if (!token) return false
+        const isVerified = this.auth.verifyToken(token)
+        if (isVerified) {
+          return this.auth.parseToken(token).meta.userName
+        }
+        return false
       }
     }
   }

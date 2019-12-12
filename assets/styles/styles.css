@@ -12,6 +12,7 @@ body {
   --foreground: #eee;
   --bgdarker: #224;
   font-family: sans-serif;
+  font-weight: 300;
   color: var(--foreground);
   background-color: var(--background);
   height: calc(100% - 25px);
@@ -37,6 +38,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
 }
 .interest a {
   color: var(--foreground)
@@ -45,7 +47,7 @@ form input {
   border: 0;
   padding: 10px;
   flex-grow: 1;
-  margin: 0 10px;
+  margin-right: 10px;
 }
 form button {
   border: none;
@@ -68,6 +70,18 @@ form button {
   text-overflow: ellipsis;
   line-height: 1.3em;
   min-height: 1.3em;
+  position: relative;
+}
+.messages .message i {
+  position: absolute;
+  right: 0;
+  top: 4px;
+  font-size: 0.8em;
+  cursor: pointer;
+  display: none;
+}
+.messages .message:hover i {
+  display: inline;
 }
 .messages .message.SYSTEM {
   opacity: 0.5;
@@ -76,6 +90,9 @@ form button {
   min-height: 1.1em;
   font-style: italic;
   text-align: right;
+}
+.messages .message.SYSTEM i {
+  display: none;
 }
 .messagesHolder {
   height: 100%;
@@ -103,6 +120,9 @@ form button {
   cursor: pointer;
   color: var(--foreground);
 }
+.header .opts {
+  white-space: nowrap;
+}
 .audio {
   display: flex;
   flex-direction: column;
@@ -115,6 +135,7 @@ form button {
 }
 .audio .status {
   font-size: 0.8em;
+  text-align: center;
 }
 .audio audio {
   display: none;
@@ -142,9 +163,6 @@ form button {
 }
 .modal img {
   box-shadow: 0 0 10px 0 var(--bgdarker);
-}
-.modal input {
-  margin-left: 0;
 }
 .modal .loginWindow div {
   display: flex;
@@ -195,19 +213,51 @@ form button {
   position: absolute;
   bottom: 55px;
   top: 70px;
-  right: 0;
+  left: 5px;
   display: flex;
   flex-direction: column-reverse;
-  align-items: center;
   overflow: auto;
 }
 .imagesHistory img {
   width: 10px;
   height: 100px;
-  margin-top: 10px;
+  margin-top: 5px;
 }
-.imagesHistory:hover img{
+.imagesHistory img:hover {
   width: 100px;
+}
+.imagesHistory img.seen {
+  border: 1px solid transparent;
+}
+
+.toolTip {
+  position: relative;
+}
+.toolTipText {
+  position: absolute;
+  padding: 5px 10px;
+  background-color: #000;
+  border-radius: 4px;
+  color: var(--foreground);
+  font-size: 0.7em;
+  cursor: default;
+  opacity: 0;
+  z-index: -100;
+  transition: opacity 100ms linear;
+  white-space: nowrap;
+}
+.toolTip:hover .toolTipText{
+  opacity: 1;
+  z-index: inherit;
+}
+.toolTip.bottom .toolTipText {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.toolTip.left-bottom .toolTipText {
+  top: 100%;
+  right: 0;
 }
 
 ::-webkit-scrollbar {
@@ -298,4 +348,10 @@ input[type=range]:focus::-ms-fill-lower {
 }
 input[type=range]:focus::-ms-fill-upper {
   background: var(--background);
+}
+
+@media only screen and (max-width: 600px) {
+  .interest {
+    font-size: 0.70em;
+  }
 }

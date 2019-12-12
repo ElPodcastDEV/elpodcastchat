@@ -9,6 +9,7 @@ const {
   broadcastSystem,
   validateNewUser,
   validateToken,
+  getTokenData,
   tryCommands,
   initializeBrain
 } = require('./responses')
@@ -25,6 +26,21 @@ http.listen(port, async () => {
   console.log(`listening on *:${port}`)
 })
 
+const uuid = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+   var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
+   return v.toString(16)
+  })
+}
+
+const fisAdmin = async (socket) => {
+  const perm = await brain.hget(
+    socket.userName, 'permissions'
+  ) || JSON.stringify({})
+  const { isAdmin } = JSON.parse(perm)
+  return isAdmin
+}
+
 io.on('connection', socket => {
   socket.on('disconnect', async () => {
     if (socket.reclaiming) return
@@ -33,8 +49,18 @@ io.on('connection', socket => {
       broadcastSystem(`${socket.userName} se ha ido`)
     }
   })
+  socket.on('deleteMessage', async msg => {
+    const { msgId, token } = JSON.parse(msg)
+    const userFromToken = getTokenData(socket, token)
+    if (await fisAdmin(socket)) {
+      io.emit('deleteMessage', msgId)
+    }
+  })
   socket.on('chat message', async msg => {
-    const { username, message } = JSON.parse(msg)
+    const { username: uname, message, token } = JSON.parse(msg)
+    const userFromToken = getTokenData(socket, token)
+    const username = userFromToken || uname
+
     if (message[0] === '/') return tryCommands(message, socket)
     if (socket.reclaiming) {
       sendSystem(
@@ -44,13 +70,11 @@ io.on('connection', socket => {
       return
     }
 
+    const nMsg = JSON.stringify({ username, message, uid: uuid() })
+
     if (username === '!blobImg!') {
-      const perm = await brain.hget(
-        socket.userName, 'permissions'
-      ) || JSON.stringify({})
-      const { isAdmin } = JSON.parse(perm)
-      if (isAdmin) {
-        io.emit('chat message', msg)
+      if (await fisAdmin(socket)) {
+        io.emit('chat message', nMsg)
       } else {
         sendSystem(
           socket,
@@ -60,7 +84,7 @@ io.on('connection', socket => {
       return
     }
 
-    io.emit('chat message', msg)
+    io.emit('chat message', nMsg)
   })
   socket.on('userNameChange', async msg => {
     const { prev, current, token } = JSON.parse(msg)
