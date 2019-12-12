@@ -4,7 +4,7 @@ class Bot {
   constructor (inputBrain, io) {
     this.brain = inputBrain
     this.io = io
-    this.auth = new Auth({secret: process.env.SECRET})
+    this.auth = new Auth({ secret: process.env.SECRET })
     this.commands = {
       '/register': async (socket, [password, email]) => {
         if (!password || !email) {
@@ -29,7 +29,6 @@ class Bot {
         if (data === password) {
           socket.reclaiming = false
           const sockets = io.sockets.clients()
-          const otherUsers = []
           Object.keys(sockets.connected).forEach(id => {
             const connectedSocket = sockets.connected[id]
             const [connId, connUser] = [connectedSocket.id, connectedSocket.userName]
@@ -69,29 +68,34 @@ class Bot {
         if (!token) return false
         const isVerified = this.auth.verifyToken(token)
         if (isVerified) {
-          return this.auth.parseToken(token).meta.userName
+          return this.auth.parseToken(token).meta
         }
         return false
       }
     }
   }
+
   on (command, socket, params) {
-    if (!this.commands[command])
+    if (!this.commands[command]) {
       return this.sendSystem(socket, `command ${command} no existe`)
-    this.commands[command](socket, params)
+    }
+    return this.commands[command](socket, params)
   }
+
   sendSystem (socket, message) {
     socket.emit('chat message', JSON.stringify({
       username: 'SYSTEM',
       message
     }))
   }
+
   broadcastSystem (message) {
     this.io.emit('chat message', JSON.stringify({
       username: 'SYSTEM',
       message
     }))
   }
+
   sendSystemData (socket, key, value) {
     socket.emit('system message', JSON.stringify({
       key, value

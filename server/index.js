@@ -1,9 +1,4 @@
-const { resolve } = require('path')
-const express = require('express')
-const Http = require('http')
-const Io = require('socket.io')
 const Brain = require('./brain')
-const getStatus = require('./shoutcast')
 const {
   sendSystem,
   broadcastSystem,
@@ -14,80 +9,46 @@ const {
   initializeBrain
 } = require('./responses')
 
-const app = express()
-const http = Http.createServer(app)
-const io = Io(http)
-const port = 80
+const { io } = require('./webserver')
+
 const brain = new Brain()
-
 initializeBrain(brain, io)
-
-http.listen(port, async () => {
-  console.log(`listening on *:${port}`)
-})
 
 const uuid = () => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-   var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
-   return v.toString(16)
+    var r = Math.random() * 16 | 0; var v = c === 'x' ? r : (r & 0x3 | 0x8)
+    return v.toString(16)
   })
 }
 
-const fisAdmin = async (socket) => {
-  const perm = await brain.hget(
-    socket.userName, 'permissions'
+const fnIsAdmin = async (msg) => {
+  const { userFromToken: userName } = JSON.parse(msg)
+  if (!userName) return false
+  const permissions = await brain.hget(
+    userName, 'permissions'
   ) || JSON.stringify({})
-  const { isAdmin } = JSON.parse(perm)
+  const { isAdmin } = JSON.parse(permissions)
   return isAdmin
 }
 
-io.on('connection', socket => {
-  socket.on('disconnect', async () => {
-    if (socket.reclaiming) return
-    if (socket.userName) {
-      await brain.hset(socket.userName, 'online', false)
-      broadcastSystem(`${socket.userName} se ha ido`)
+const customActions = {
+  deleteMessage: async (_socket, msg) => {
+    if (await fnIsAdmin(msg)) {
+      io.emit('chat message', msg)
     }
-  })
-  socket.on('deleteMessage', async msg => {
-    const { msgId, token } = JSON.parse(msg)
-    const userFromToken = getTokenData(socket, token)
-    if (userFromToken && await fisAdmin(socket)) {
-      io.emit('deleteMessage', msgId)
-    }
-  })
-  socket.on('chat message', async msg => {
-    const { username: uname, message, token } = JSON.parse(msg)
-    const userFromToken = getTokenData(socket, token)
-    const username = userFromToken || uname
-
-    if (message[0] === '/') return tryCommands(message, socket)
-    if (socket.reclaiming) {
+  },
+  sendImage: async (socket, msg) => {
+    if (await fnIsAdmin(msg)) {
+      io.emit('chat message', msg)
+    } else {
       sendSystem(
         socket,
-        'Actualmente no puedes mandar mensajes, hasta que cambies de nick o lo reclames'
+        'Solo los admins pueden mandar imágenes'
       )
-      return
     }
-
-    const nMsg = JSON.stringify({ username, message, uid: uuid() })
-
-    if (username === '!blobImg!') {
-      if (await fisAdmin(socket)) {
-        io.emit('chat message', nMsg)
-      } else {
-        sendSystem(
-          socket,
-          'Solo los admins pueden mandar imágenes'
-        )
-      }
-      return
-    }
-
-    io.emit('chat message', nMsg)
-  })
-  socket.on('userNameChange', async msg => {
-    const { prev, current, token } = JSON.parse(msg)
+  },
+  userNameChange: async (socket, msg) => {
+    const { current, token } = JSON.parse(msg)
     if (!socket.reclaiming && socket.userName) {
       brain.hset(socket.userName, 'online', false)
       broadcastSystem(`${socket.userName} se ha ido`)
@@ -100,16 +61,40 @@ io.on('connection', socket => {
     } else if (!socket.reclaiming) {
       broadcastSystem(`${socket.userName} se ha unido!`)
     }
+  }
+}
+
+io.on('connection', socket => {
+  socket.on('disconnect', async () => {
+    if (socket.reclaiming) return
+    if (socket.userName) {
+      await brain.hset(socket.userName, 'online', false)
+      broadcastSystem(`${socket.userName} se ha ido`)
+    }
   })
-})
 
-app.use(express.static('assets'))
+  socket.on('chat message', async msg => {
+    const { message, token, messageType } = JSON.parse(msg)
+    const { userName: userFromToken } = getTokenData(token)
+    if (message && message[0] === '/') return tryCommands(message, socket)
+    if (socket.reclaiming) {
+      sendSystem(
+        socket,
+        'Actualmente no puedes mandar mensajes, hasta que cambies de nick o lo reclames'
+      )
+      return
+    }
 
-app.get('/status', async (req, res) => {
-  const status = await getStatus('http://188.165.240.90:8292/index.html?sid=1')
-  res.json({ status })
-})
+    const nMsg = JSON.stringify({
+      ...JSON.parse(msg),
+      uid: uuid(),
+      userFromToken
+    })
 
-app.get('/', (req, res) => {
-  res.sendFile(resolve(__dirname, '../assets/index.html'))
+    if (customActions[messageType]) {
+      return customActions[messageType](socket, nMsg)
+    }
+
+    io.emit('chat message', nMsg)
+  })
 })

@@ -17,8 +17,7 @@ const getStatus = url => {
           .join('')
         return resolve(res)
       })
-
-    }).on("error", (err) => {
+    }).on('error', (err) => {
       return reject(err.message)
     })
   })

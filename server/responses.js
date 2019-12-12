@@ -41,10 +41,10 @@ const validateNewUser = async (socket, currentUser) => {
 }
 
 const validateToken = async (socket, token) => {
-  bot.on('/validateToken', socket, token)
+  return bot.on('/validateToken', socket, token)
 }
-const getTokenData = (socket, token) => {
-  bot.on('/getTokenData', socket, token)
+const getTokenData = (token) => {
+  return bot.on('/getTokenData', null, token)
 }
 
 const tryCommands = (message, socket) => {

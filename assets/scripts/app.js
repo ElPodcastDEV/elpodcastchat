@@ -1,4 +1,4 @@
-/* globals Vue localStorage io window */
+/* globals Vue localStorage io fetch FileReader */
 
 document.addEventListener('DOMContentLoaded', function () {
   Vue.config.keyCodes = {
@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function () {
     data: {
       message: '',
       socket: io(),
-      // messages: [...new Array(50)].map((i, k) => `${k} Zero: TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest`),
       messages: [],
       history: [],
       historyKey: 0,
@@ -37,14 +36,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const message = this.message.trim()
         if (message === '') return
         const { token } = this.localStorage
-        this.socket.emit(
-          'chat message',
-          JSON.stringify({
-            username: this.username,
-            message: this.message,
-            token
-          })
-        )
+        this.sendMessage({
+          username: this.username,
+          message: this.message,
+          token
+        })
         this.history.unshift(this.message)
         this.historyKey = -1
         this.message = ''
@@ -76,6 +72,9 @@ document.addEventListener('DOMContentLoaded', function () {
       saveData () {
         localStorage.data = JSON.stringify(this.localStorage)
       },
+      sendMessage (params) {
+        this.socket.emit('chat message', JSON.stringify(params))
+      },
       setUsername () {
         const prev = this.oldUsername
         this.username = this.loginUserName.trim()
@@ -85,9 +84,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         this.localStorage.username = this.username
         this.saveData()
-        this.socket.emit('userNameChange', JSON.stringify({
-          prev, current: this.username
-        }))
+        this.sendMessage({
+          messageType: 'userNameChange',
+          current: this.username,
+          prev
+        })
         setTimeout(() => { this.toText() }, 1)
       },
       async getStatus () {
@@ -97,20 +98,21 @@ document.addEventListener('DOMContentLoaded', function () {
         this.status = json.status
         this.statusTimer = setTimeout(() => {
           this.getStatus()
-        }, 5000);
+        }, 5000)
       },
       navigateHistory (evt) {
         this.historyKey = evt.keyCode === 38
           ? this.historyKey += 1
           : this.historyKey -= 1
         if (this.historyKey < -1) this.historyKey = -1
-        if (this.historyKey > this.history.length -1)
-          this.historyKey = this.history.length -1
+        if (this.historyKey > this.history.length - 1) {
+          this.historyKey = this.history.length - 1
+        }
         this.message = this.history[this.historyKey]
       },
-      pasting (evt) {
+      pasting (event) {
         var items = (event.clipboardData || event.originalEvent.clipboardData).items
-        for (index in items) {
+        for (var index in items) {
           var item = items[index]
           if (item.kind === 'file') {
             var blob = item.getAsFile()
@@ -123,26 +125,31 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       },
       sendImg () {
-        this.socket.emit(
-          'chat message',
-          JSON.stringify({
-            username: '!blobImg!',
-            message: this.tmpImg
-          })
-        )
+        const { token } = this.localStorage
+        this.sendMessage({
+          messageType: 'sendImage',
+          username: this.username,
+          message: this.tmpImg,
+          token
+        })
         this.tmpImg = null
       },
       toText () {
         this.$refs.textInput.focus()
       },
-      clearMessage (msgId) {
+      deleteMessage (msgId) {
         this.messages = this.messages.filter(m => m.uid !== msgId)
         this.localStorage.pastMsgs = this.messages
         this.saveData()
+      },
+      clearMessage (msgId) {
+        this.deleteMessage(msgId)
         const { token } = this.localStorage
-        this.socket.emit('deleteMessage', JSON.stringify({
-          msgId, token
-        }))
+        this.sendMessage({
+          messageType: 'deleteMessage',
+          msgId,
+          token
+        })
       }
     },
     mounted () {
@@ -152,28 +159,30 @@ document.addEventListener('DOMContentLoaded', function () {
       if (pastMsgs) this.messages = pastMsgs
       if (username) {
         this.username = username
-        this.socket.emit('userNameChange', JSON.stringify({
+        this.sendMessage({
+          messageType: 'userNameChange',
           current: this.username,
           token
-        }))
+        })
       }
       this.socket.on('chat message', msg => {
-        const { username, message, uid } = JSON.parse(msg)
-        if (username === '!blobImg!') {
-          this.images.unshift({blob: message, uid})
+        const { messageType, username, message, uid, msgId } = JSON.parse(msg)
+        if (messageType === 'sendImage') {
+          this.images.unshift({ blob: message, uid })
           return
         }
-        this.messages.unshift({username, message, uid})
+        if (messageType === 'deleteMessage') {
+          this.deleteMessage(msgId)
+          return
+        }
+        this.messages.unshift({ username, message, uid })
         this.localStorage.pastMsgs = this.messages
-        localStorage.data = JSON.stringify(this.localStorage)
+        this.saveData()
       })
       this.socket.on('system message', msg => {
         const { key, value } = JSON.parse(msg)
         this.localStorage[key] = value
         this.saveData()
-      })
-      this.socket.on('deleteMessage', msgId => {
-        this.clearMessage(msgId)
       })
     }
   })
