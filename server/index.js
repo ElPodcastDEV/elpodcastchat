@@ -52,7 +52,7 @@ io.on('connection', socket => {
   socket.on('deleteMessage', async msg => {
     const { msgId, token } = JSON.parse(msg)
     const userFromToken = getTokenData(socket, token)
-    if (await fisAdmin(socket)) {
+    if (userFromToken && await fisAdmin(socket)) {
       io.emit('deleteMessage', msgId)
     }
   })
