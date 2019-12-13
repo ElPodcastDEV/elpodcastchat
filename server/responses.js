@@ -46,6 +46,9 @@ const validateToken = async (socket, token) => {
 const getTokenData = (token) => {
   return bot.on('/getTokenData', null, token)
 }
+const uuid = () => {
+  return bot.uuid()
+}
 
 const tryCommands = (message, socket) => {
   const [command, ...params] = message.split(' ')
@@ -61,6 +64,7 @@ module.exports = {
   validateToken,
   getTokenData,
   tryCommands,
+  uuid,
   initializeBrain: (inputBrain, io) => {
     brain = inputBrain
     bot = new Bot(brain, io)

@@ -63,7 +63,7 @@
           <div
             :key="itm.uid"
             :class="'message ' + itm.username"
-            v-for="itm in messages"
+            v-for="itm in chatMessages"
           >
             <span v-if="itm.username !== 'SYSTEM'">{{itm.username}}: </span>{{itm.message}}
             <i class="material-icons" @click="clearMessage(itm.uid)">delete_forever</i>
@@ -71,6 +71,13 @@
         </div>
       </div>
       <form @submit.prevent="submit" class="elform" v-if="username">
+        <input
+          ref="fileSelector"
+          type="file"
+          @change="fileSelected"
+          v-show="false"
+          v-if="reloadMe"
+        />
         <input
           autocomplete="off"
           v-model="message"

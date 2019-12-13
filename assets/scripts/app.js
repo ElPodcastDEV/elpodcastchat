@@ -22,19 +22,29 @@ document.addEventListener('DOMContentLoaded', function () {
       loginUserName: null,
       tmpImg: null,
       images: [],
-      displayImage: null
+      displayImage: null,
+      reloadMe: true
     },
     computed: {
       vol () {
         const volume = this.volume / 100
         this.player.volume = volume
         return volume
+      },
+      chatMessages () {
+        return this.messages.filter(msg => {
+          const epoch = msg.uid.split('-')[0]
+          const now = new Date().getTime()
+          const msgTimeStamp = new Date(parseInt(epoch, 10)).getTime()
+          return msgTimeStamp + 8.64e7 > now
+        })
       }
     },
     methods: {
       submit () {
         const message = this.message.trim()
         if (message === '') return
+        if (message === '/pip') return this.requestImage()
         const { token } = this.localStorage
         this.sendMessage({
           username: this.username,
@@ -110,6 +120,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         this.message = this.history[this.historyKey]
       },
+      requestImage () {
+        this.message = ''
+        this.$refs.fileSelector.click()
+      },
+      fileSelected (event) {
+        const file = event.target.files[0]
+        if (!file.type.match('image.*')) return
+        var reader = new FileReader()
+        reader.onload = event => {
+          this.tmpImg = event.target.result
+          this.reloadMe = false
+          this.$nextTick(() => { this.reloadMe = true })
+        }
+        reader.readAsDataURL(file)
+      },
       pasting (event) {
         var items = (event.clipboardData || event.originalEvent.clipboardData).items
         for (var index in items) {
@@ -165,7 +190,6 @@ document.addEventListener('DOMContentLoaded', function () {
           token
         })
       }
-      this.clearChat()
       this.socket.on('chat message', msg => {
         const { messageType, username, message, uid, msgId } = JSON.parse(msg)
         if (messageType === 'sendImage') {

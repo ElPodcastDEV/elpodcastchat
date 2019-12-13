@@ -6,20 +6,14 @@ const {
   validateToken,
   getTokenData,
   tryCommands,
-  initializeBrain
+  initializeBrain,
+  uuid
 } = require('./responses')
 
 const { io } = require('./webserver')
 
 const brain = new Brain()
 initializeBrain(brain, io)
-
-const uuid = () => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    var r = Math.random() * 16 | 0; var v = c === 'x' ? r : (r & 0x3 | 0x8)
-    return v.toString(16)
-  })
-}
 
 const fnIsAdmin = async (msg) => {
   const { userFromToken: userName } = JSON.parse(msg)
