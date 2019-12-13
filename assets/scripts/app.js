@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       chatMessages () {
         return this.messages.filter(msg => {
+          if (!msg.uid) return false
           const epoch = msg.uid.split('-')[0]
           const now = new Date().getTime()
           const msgTimeStamp = new Date(parseInt(epoch, 10)).getTime()
