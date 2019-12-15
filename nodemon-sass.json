@@ -1,0 +1,10 @@
+{
+  "ext": "sass",
+  "ignore": [
+    "./server",
+    "./dist"
+  ],
+  "watch": [
+    "./front"
+  ]
+}

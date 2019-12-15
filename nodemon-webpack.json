@@ -1,0 +1,10 @@
+{
+  "ext": "js, vue",
+  "ignore": [
+    "./server",
+    "./dist"
+  ],
+  "watch": [
+    "./front"
+  ]
+}

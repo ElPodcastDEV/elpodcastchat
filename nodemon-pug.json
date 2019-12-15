@@ -1,0 +1,10 @@
+{
+  "ext": "pug",
+  "ignore": [
+    "./server",
+    "./dist"
+  ],
+  "watch": [
+    "./front"
+  ]
+}

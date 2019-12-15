@@ -1,0 +1,10 @@
+{
+  "ext": "js",
+  "ignore": [
+    "./front",
+    "./dist"
+  ],
+  "watch": [
+    "./server"
+  ]
+}
