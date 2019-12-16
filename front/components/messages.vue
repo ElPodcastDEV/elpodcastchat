@@ -2,12 +2,12 @@
 .messages
   max-width: 100vw
   grid-area: messages
-
   .messagesHolder
     padding: 10px
     display: flex
     flex-direction: column-reverse
-
+    height: 100%
+    overflow: auto
   .message
     padding: 0 10px
     overflow: hidden
@@ -15,7 +15,6 @@
     line-height: 1.3em
     min-height: 1.3em
     position: relative
-
   .message i
     position: absolute
     right: 0
@@ -23,31 +22,30 @@
     font-size: 0.8em
     cursor: pointer
     display: none
-
   .message:hover i
     display: inline
-
   .message.SYSTEM
     opacity: 0.5
-    font-size: 0.8em
+    font-size: 0.75em
     line-height: 1.1em
     min-height: 1.1em
     font-style: italic
     text-align: right
-
   .message.SYSTEM i
     display: none
-
-.messagesHolder
-  height: 100%
-  overflow: auto
-
+  .message.isMention
+    background-color: var(--bgdarker)
+  .message .userName
+    cursor: pointer
 </style>
 <template lang="pug">
   .messages
     .messagesHolder
-      div(:key='itm.uid' :class="'message ' + itm.username" v-for='itm in chatMessages')
-        span(v-if="itm.username !== 'SYSTEM'") {{itm.username}}: 
+      div(:key='itm.uid' :class="'message ' + itm.username + ' ' + isMention(itm)" v-for='itm in chatMessages')
+        span.userName(
+          v-if="itm.username !== 'SYSTEM'"
+          @click="addToMsg(itm.username)"
+        ) {{itm.username}}: 
         | {{itm.message}}
         i.material-icons(@click='clearMessage(itm.uid)') delete_forever
 </template>
@@ -75,6 +73,15 @@ export default {
         msgId,
         token
       })
+    },
+    isMention(item) {
+      if (item.username === 'SYSTEM') return ''
+      if (item.message.indexOf(`@${brain.get('userName')}`) !== -1) return 'isMention'
+      return ''
+    },
+    addToMsg(userName) {
+      this.$root.$emit('addToMsg', userName)
+      brain.set({ focusText: true })
     }
   }
 }

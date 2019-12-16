@@ -18,7 +18,7 @@
     color: var(--foreground)
 </style>
 <template lang="pug">
-  form.elform(@submit.prevent='submit')
+  form.elform(@submit.prevent='submit' v-if="!isReplaying")
     template(v-if='userName')
       input(
         ref='fileSelector'
@@ -50,6 +50,10 @@ export default {
     reloadMe: true
   }),
   computed: {
+    isReplaying () {
+      console.log(brain.get('episode'))
+      return brain.get('episode')
+    },
     isFocus () {
       if (brain.get('focusText')) {
         this.$refs.textInput.focus()
@@ -118,6 +122,13 @@ export default {
       }
       this.message = this.history[this.historyKey]
     },
+  },
+  mounted () {
+    this.$root.$on('addToMsg', userName => {
+      this.message = (this.message === '') ?
+        `@${userName} ` :
+        this.message + ` @${userName} `
+    })
   }
 }
 </script>

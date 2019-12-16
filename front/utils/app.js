@@ -7,6 +7,9 @@ import loginmodal from 'Components/loginModal.vue'
 import messagefield from 'Components/messageField.vue'
 import imagepreview from 'Components/imagePreview.vue'
 
+const urlParams = new URLSearchParams(window.location.search)
+const episode = urlParams.get('episode')
+
 document.addEventListener('DOMContentLoaded', function () {
   Vue.config.keyCodes = {
     'arrow-keys': [38, 40]
@@ -23,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     },
     mounted () {
       brain.loadData()
+      brain.set({ episode })
     }
   })
   return vue

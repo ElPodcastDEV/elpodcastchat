@@ -10,6 +10,7 @@ const storage = Vue.observable({
   oldUserName: null,
   focusText: false,
   tmpImg: null,
+  episode: null,
   images: []
 })
 

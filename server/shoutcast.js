@@ -8,6 +8,7 @@ const getStatus = url => {
         data += chunk
       })
       resp.on('end', () => {
+        const isDown = 'Stream is currently down.'
         const lowerDel = 'Stream Status: </td><td><b>'
         const upperDel = '</b></td></tr><tr valign="top"><td>Listener Peak:'
         const init = data.indexOf(lowerDel)
@@ -15,6 +16,7 @@ const getStatus = url => {
         const res = [...data]
           .slice(init + lowerDel.length, end)
           .join('')
+        if (res.indexOf(isDown) === 0) return resolve(isDown)
         return resolve(res)
       })
     }).on('error', (err) => {
