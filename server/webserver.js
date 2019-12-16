@@ -7,7 +7,7 @@ const getStatus = require('./shoutcast')
 const app = express()
 const http = Http.createServer(app)
 const io = Io(http)
-const port = 80
+const port = process.env.PORT || 80
 
 http.listen(port, async () => {
   console.log(`listening on *:${port}`)

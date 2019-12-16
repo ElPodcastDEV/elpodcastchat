@@ -9,8 +9,10 @@ services:
         max-size: "50m"
     environment:
       - SECRET=${SECRET:-my-awesome-secret}
+      - NODE_ENV=production
+      - DB=redis
     build: .
-    command: npm run start:${ENV:-dev}
+    command: npm run start
     volumes:
       - .:/usr/app
       - /usr/app/node_modules

@@ -4,22 +4,18 @@
   "description": "",
   "main": "server/index.js",
   "scripts": {
-
     "build": "npm-run-all -s build:sass build:pug build:webpack",
-
-    "start:prod": "forever -c 'node --harmony' server/index.js",
-    "nodemon-dev-server": "nodemon server/index.js --config ./nodemon-server.json",
-    "start:dev": "npm-run-all -p nodemon-sass nodemon-pug nodemon-webpack nodemon-dev-server",
-
+    "start": "forever -c 'node --harmony' server/index.js",
+    "dev": "npm-run-all -p dev:db dev:app",
+    "dev:db": "docker-compose -f dev-docker-compose.yml up",
+    "dev:app": "npm-run-all -p nodemon-sass nodemon-pug nodemon-webpack nodemon-dev-server",
+    "nodemon-dev-server": "SECRET=my-secret DB=localhost PORT=3200 nodemon server/index.js --config ./nodemon-server.json",
     "build:sass": "sass ./front/styles/globalStyles.sass ./dist/styles/styles.css --no-source-map",
     "nodemon-sass": "nodemon --exec 'npm run build:sass' --config ./nodemon-sass.json",
-
     "build:pug": "pug ./front/index.pug --out ./dist -P",
     "nodemon-pug": "nodemon --exec 'npm run build:pug' --config ./nodemon-pug.json",
-
     "build:webpack": "webpack --config ./front/webpack.config.js",
     "nodemon-webpack": "nodemon --exec 'npm run build:webpack' --config ./nodemon-webpack.json"
-
   },
   "author": "",
   "license": "GPL-2.0-only",

@@ -1,0 +1,47 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  --background: #446;
+  --foreground: #eee;
+  --bgdarker: #224;
+  font-family: "Source Sans Pro", sans-serif;
+  font-weight: 300;
+  color: var(--foreground);
+  background-color: var(--background);
+  height: calc(100% - 25px);
+}
+
+.app {
+  display: grid;
+  grid-template-areas: "header" "interest" "messages" "form";
+  grid-template-rows: 70px 30px calc(100% - 80px) 50px;
+  grid-template-columns: 1fr;
+  height: calc(100% - 50px);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bgdarker);
+}
+
+@media only screen and (max-width: 600px) {
+  .interest {
+    font-size: 0.7em;
+  }
+}

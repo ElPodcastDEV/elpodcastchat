@@ -1,9 +1,8 @@
-FROM node:latest
-ENV TZ=America/Mexico_City
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+FROM node:lts-alpine
 WORKDIR /usr/app
 COPY . .
-RUN npm install -g nodemon
-RUN npm install -g forever
-RUN npm install
-RUN npm run build
+ENV TZ=America/Mexico_City
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime &&\
+ echo $TZ > /etc/timezone &&\
+ npm install -g forever &&\
+ npm install
