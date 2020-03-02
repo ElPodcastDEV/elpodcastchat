@@ -10,12 +10,12 @@
   font-size: 0.7em
   cursor: default
   opacity: 0
-  z-index: -100
+  z-index: -1000
   transition: opacity 100ms linear
   white-space: nowrap
 .toolTip:hover .toolTipText
   opacity: 1
-  z-index: inherit
+  z-index: 1000
 .toolTip.bottom .toolTipText
   top: 100%
   left: 50%

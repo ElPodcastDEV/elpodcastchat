@@ -14,6 +14,11 @@
   .status
     font-size: 0.8em
     text-align: center
+    opacity: 0.7
+    &, a
+      color: var(--foreground)
+    &:hover
+      opacity: 1
 
   audio
     display: none
@@ -103,20 +108,19 @@ input[type=range]:focus::-ms-fill-upper
         i.material-icons(@click='mute') volume_off
 
       audio(controls='' ref='elPlayer')
-        source(src='http://188.165.240.90:8292/stream' type='audio/mp3')
+        source(src='https://listen.elpodcast.dev' type='audio/mp3')
         | Your browser does not support the audio tag. {{vol}}
-    span.status {{status}}
+    span.status
+      |Escúchanos en&nbsp;
+      a(href="https://listen.elpodcast.dev", target="blank") https://listen.elpodcast.dev
 </template>
 <script>
-import { getStatus } from 'Utils/comms'
 import tooltip from 'Components/tooltip.vue'
 export default {
   data: () => ({
     isPlaying: false,
     player: {},
     volume: 100,
-    status: '',
-    statusTimer: null
   }),
   computed: {
     vol () {
@@ -137,19 +141,10 @@ export default {
     },
     mute () {
       this.volume = parseInt(this.volume, 10) === 0 ? 100 : 0
-    },
-    async getStatus () {
-      if (this.statusTimer) clearTimeout(this.statusTimer)
-      const json = await getStatus()
-      this.status = json.status
-      this.statusTimer = setTimeout(() => {
-        this.getStatus()
-      }, 5000)
     }
   },
   mounted () {
     this.player = this.$refs.elPlayer
-    this.getStatus()
   },
   components: {
     tooltip

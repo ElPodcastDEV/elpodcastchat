@@ -10,11 +10,17 @@
     overflow: auto
   .message
     padding: 0 10px
+    line-height: 1.3em
+    position: relative
+    transition: background-color 500ms linear
+  .message .userName
+    vertical-align: top
+  .message .txtData
+    min-height: 1.3em
+    display: inline-block
+    width: calc(100vw - 100px)
     overflow: hidden
     text-overflow: ellipsis
-    line-height: 1.3em
-    min-height: 1.3em
-    position: relative
   .message i
     position: absolute
     right: 0
@@ -22,8 +28,10 @@
     font-size: 0.8em
     cursor: pointer
     display: none
-  .message:hover i
-    display: inline
+  .message:hover
+    background-color: var(--bgdarker)
+    i
+      display: inline
   .message.SYSTEM
     opacity: 0.5
     font-size: 0.75em
@@ -31,8 +39,6 @@
     min-height: 1.1em
     font-style: italic
     text-align: right
-  .message.SYSTEM i
-    display: none
   .message.isMention
     background-color: var(--bgdarker)
   .message .userName
@@ -46,7 +52,7 @@
           v-if="itm.username !== 'SYSTEM'"
           @click="addToMsg(itm.username)"
         ) {{itm.username}}: 
-        | {{itm.message}}
+        span.txtData {{itm.message}}
         i.material-icons(@click='clearMessage(itm.uid)') delete_forever
 </template>
 <script>

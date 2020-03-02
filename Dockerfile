@@ -1,6 +1,6 @@
 FROM node:lts-alpine
-WORKDIR /usr/app
-COPY . .
+WORKDIR /usr/app/
+COPY . /usr/app/
 ENV TZ=America/Mexico_City
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime &&\
  echo $TZ > /etc/timezone &&\
