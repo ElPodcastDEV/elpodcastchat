@@ -12,20 +12,25 @@ html {
 body {
   --background: #446;
   --foreground: #eee;
-  --bgdarker: #224;
-  font-family: "Source Sans Pro", sans-serif;
-  font-weight: 300;
+  --bgdarker: rgba(0,0,0,0.9);
+  font-family: "TypoPRO Fira Code", sans-serif;
+  font-size: 13px;
+  line-height: 12px;
+  letter-spacing: 0px;
+  font-weight: normal;
   color: var(--foreground);
-  background-color: var(--background);
-  height: calc(100% - 25px);
+  background: var(--background) url("https://firebasestorage.googleapis.com/v0/b/sonidos-podcast.appspot.com/o/80994.jpg?alt=media&token=303fa30b-177b-48af-8cbc-e745eb0e5ab6") no-repeat center;
+  background-size: cover;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .app {
+  height: 100%;
   display: grid;
-  grid-template-areas: "header" "interest" "messages" "form";
-  grid-template-rows: 70px 30px calc(100% - 80px) 50px;
-  grid-template-columns: 1fr;
-  height: calc(100% - 50px);
+  grid-template-areas: "messages display" "header header";
+  grid-template-rows: calc(100% - 70px) 70px;
+  grid-template-columns: 300px 1fr;
 }
 
 ::-webkit-scrollbar {
@@ -40,8 +45,16 @@ body {
   background: var(--bgdarker);
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 800px) {
   .interest {
     font-size: 0.7em;
+  }
+
+  .app {
+    height: 100%;
+    display: grid;
+    grid-template-areas: "display" "messages" "header";
+    grid-template-rows: 50% calc(50% - 70px) 70px;
+    grid-template-columns: 1fr;
   }
 }

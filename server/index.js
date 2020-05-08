@@ -31,7 +31,10 @@ const customActions = {
       io.emit('chat message', msg)
     }
   },
-  sendImage: async (socket, msg) => {
+  sendImage: async (_socket, msg) => {
+    io.emit('chat message', msg)
+  },
+  sendImageVIP: async (socket, msg) => {
     if (await fnIsAdmin(msg)) {
       io.emit('chat message', msg)
     } else {

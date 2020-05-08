@@ -17,9 +17,18 @@ export const getStatus = async () => {
 socket.on('chat message', msg => {
   const { messageType, username, message, uid, msgId } = JSON.parse(msg)
   if (messageType === 'sendImage') {
-    const images = brain.get('images')
-    images.unshift({ blob: message, uid })
-    brain.set({ images })
+    const messages = brain.get('messages')
+    messages.unshift({
+      username,
+      message: 'builtInImage',
+      uid,
+      blob: message
+    })
+    brain.set({ messages })
+    return
+  }
+  if (messageType === 'sendImageVIP') {
+    brain.setShowcase(message)
     return
   }
   if (messageType === 'deleteMessage') {

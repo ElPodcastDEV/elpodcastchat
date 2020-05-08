@@ -3,7 +3,7 @@
   position: absolute
   bottom: 70px
   left: 20px
-.sendImg img, .imagesHistory img
+.sendImg img
   width: 200px
   height: 200px
   object-fit: contain
@@ -33,23 +33,6 @@
   background-color: var(--background)
 .sendImg .btn.send:hover
   background-color: var(--bgdarker)
-
-.imagesHistory
-  position: absolute
-  bottom: 55px
-  top: 70px
-  left: 5px
-  display: flex
-  flex-direction: column-reverse
-  overflow: auto
-.imagesHistory img
-  width: 10px
-  height: 100px
-  margin-top: 5px
-.imagesHistory img:hover
-  width: 100px
-.imagesHistory img.seen
-  border: 1px solid transparent
 </style>
 <template lang="pug">
   .imagesPreview
@@ -58,14 +41,6 @@
       .btns
         .btn.send(@click='sendImg') Enviar
         .btn.cancel(@click='discardImage') Cancelar
-    .imagesHistory
-      img(
-        :class='image.seen ? "seen" : ""'
-        :src='image.blob'
-        :key='image.uid'
-        v-for='image in images'
-        @click='image.seen = true; displayImage = image.blob'
-      )
     modal(:display="displayImage" :action='discardImage')
       img.loginWindow(:src='displayImage')
 </template>
@@ -74,29 +49,27 @@ import brain from 'Utils/brain'
 import { sendMessage } from 'Utils/comms'
 import modal from 'Components/modal.vue'
 export default {
-  data: () => ({
-    displayImage: null
-  }),
   computed: {
     tmpImg () {
       return brain.get('tmpImg')
     },
-    images () {
-      return brain.get('images')
+    displayImage () {
+      return brain.get('displayImage')
     }
   },
   methods: {
     discardImage () {
-      this.displayImage = null
       brain.set({
+        displayImage: null,
         tmpImg: null,
         focusText: true
       })
     },
     sendImg () {
       const token = brain.get('token')
+      const isVIP = brain.get('imageToVIP') ? 'VIP' : ''
       sendMessage({
-        messageType: 'sendImage',
+        messageType: `sendImage${isVIP}`,
         username: brain.get('userName'),
         message: this.tmpImg,
         token

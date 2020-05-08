@@ -1,25 +1,42 @@
 <style lang="sass" scoped>
 .elform
-  padding: 10px
+  padding: 0 5px
   display: flex
-  grid-area: form
   align-items: center
-  span
-    cursor: pointer
+  height: 20px
+  line-height: 20px
+  .prompt
+    height: 15px
+    line-height: 18px
+    white-space: nowrap
+    .username
+      color: #68fdf7
+      font-weight: 800
+    .home
+      color: #61fa68
+    .par
+      color: #5971ff
+    .branch
+      color: #ff6e67
   input
     border: 0
-    padding: 10px
+    padding: 0 0 0 5px
     flex-grow: 1
-    margin-right: 10px
-  button
-    border: none
-    padding: 10px
-    background-color: var(--bgdarker)
-    color: var(--foreground)
+    background-color: transparent
+    color: red
+    text-shadow: 0px 0px 0px var(--foreground)
+    -webkit-text-fill-color: transparent
 </style>
 <template lang="pug">
   form.elform(@submit.prevent='submit' v-if="!isReplaying")
     template(v-if='userName')
+      label(for="prompt").prompt
+        span.home ~ 
+        span.username epd 
+        span.branch
+          span.par (
+          |master
+          span.par )
       input(
         ref='fileSelector'
         type='file'
@@ -28,15 +45,14 @@
         v-if='reloadMe'
       )
       input(
+        id="prompt"
         autocomplete='off'
         v-model='message'
-        :placeholder="userName + ':'"
         @keyup.arrow-keys='navigateHistory'
         @paste='pasting'
         ref='textInput'
         :is-focus='isFocus'
       )
-      button Enviar
 </template>
 <script>
 import brain from 'Utils/brain'
@@ -44,6 +60,7 @@ import { sendMessage } from 'Utils/comms'
 
 export default {
   data: () => ({
+    imageToVIP: false,
     message: '',
     history: [],
     historyKey: 0,
@@ -80,12 +97,21 @@ export default {
         }
       }
     },
-    requestImage () {
+    toggleVIP () {
       this.message = ''
+      this.imageToVIP = !this.imageToVIP
+      brain.set({
+        imageToVIP: this.imageToVIP
+      })
+    },
+    requestImage (vip = false) {
+      this.message = ''
+      if (vip) this.imageToVIP = true
       this.$refs.fileSelector.click()
     },
     resetFileSelector () {
       this.reloadMe = false
+      this.imageToVIP = false
       this.$nextTick(() => { this.reloadMe = true })
     },
     fileSelected (event) {
@@ -93,15 +119,34 @@ export default {
       if (!file.type.match('image.*')) return this.resetFileSelector()
       var reader = new FileReader()
       reader.onload = event => {
-        brain.set({ tmpImg: event.target.result })
+        brain.set({
+          tmpImg: event.target.result,
+          imageToVIP: this.imageToVIP
+        })
         this.resetFileSelector()
       }
       reader.readAsDataURL(file)
     },
+    clearChat () {
+      this.message = ''
+      brain.set({ messages: [] })
+    },
+    logout () {
+      this.message = ''
+      brain.set({
+        oldUsername: this.username,
+        userName: null,
+        token: null
+      })
+    },
     submit () {
       const message = this.message.trim()
       if (message === '') return
-      if (message === '/pip') return this.requestImage()
+      if (message === '/img') return this.requestImage()
+      if (message === '/toggleVIP') return this.toggleVIP()
+      if (message === '/pip') return this.requestImage(true)
+      if (message === '/clear') return this.clearChat()
+      if (message === '/logout') return this.logout()
       const token = brain.get('token')
       sendMessage({
         username: brain.get('userName'),

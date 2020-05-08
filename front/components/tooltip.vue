@@ -23,6 +23,13 @@
 .toolTip.left-bottom .toolTipText
   top: 100%
   right: 0
+.toolTip.top .toolTipText
+  bottom: 100%
+  left: 50%
+  transform: translateX(-50%)
+.toolTip.left-top .toolTipText
+  bottom: 100%
+  right: 0
 </style>
 <template lang="pug">
   span.toolTip

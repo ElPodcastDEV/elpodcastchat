@@ -1,5 +1,6 @@
 <style lang="sass" scoped>
 .audio
+  width: 150px
   display: flex
   flex-direction: column
   align-items: center
@@ -7,112 +8,77 @@
   .player
     display: flex
     align-items: center
-    margin-bottom: 5px
     i
       cursor: pointer
+      font-size: 49px
+      margin-top: 5px
+  .range
+    position: relative
+    width: 100px
 
-  .status
-    font-size: 0.8em
-    text-align: center
-    opacity: 0.7
-    &, a
-      color: var(--foreground)
-    &:hover
-      opacity: 1
-
+    input
+      position: absolute
+      top: 0
+      left: 0
   audio
     display: none
 
 /* shameless range css copy/pasted */
-input[type=range] 
+input[type='range'].background
+  overflow: hidden
+input[type='range']
   -webkit-appearance: none
-  margin: 0 10px
-  width: 100px
-  cursor: pointer
-  --thumbWidth: 16px
-  --thumbHeight: 30px
-  --trackHeight: 8px
-input[type=range]::-webkit-slider-runnable-track 
   width: 100%
-  height: 8px
-  background: var(--background)
-input[type=range]::-webkit-slider-thumb 
-  box-shadow: 1px 1px 1px var(--bgdarker), 0px 0px 1px var(--bgdarker)
-  border: 1px solid var(--bgdarker)
-  width: var(--thumbWidth)
-  height: var(--thumbHeight)
-  border-radius: 3px
-  background: var(--background)
+  background-color: rgba(255,255,255,0.1)
+input[type='range']::-webkit-slider-runnable-track
   -webkit-appearance: none
-  margin-top: calc( -1 * calc(var(--thumbHeight) - calc(var(--thumbHeight) / 1.6)))
-  transition: background-color 500ms linear
-input[type=range]:hover::-webkit-slider-thumb 
-  background: var(--foreground)
-input[type=range]::-moz-range-track 
-  width: 100%
-  height: --trackHeight
-  background: var(--background)
-input[type=range]::-moz-range-thumb 
-  box-shadow: 1px 1px 1px var(--bgdarker), 0px 0px 1px var(--bgdarker)
-  border: 1px solid var(--bgdarker)
-  width: var(--thumbWidth)
-  height: var(--thumbHeight)
-  border-radius: 3px
-  background: var(--foreground)
-input[type=range]::-ms-track 
-  width: 100%
-  height: --trackHeight
+  height: 4px
+input[type='range'].background::-webkit-slider-thumb
+  -webkit-appearance: none
+  width: 15px
+  height: 15px
   background: transparent
-  border-color: transparent
-  border-width: 16px 0
-  color: transparent
-input[type=range]::-ms-fill-lower 
-  background: var(--background)
-  border: 0.2px solid var(--bgdarker)
-  border-radius: 2.6px
-  box-shadow: 1px 1px 1px var(--bgdarker), 0px 0px 1px var(--bgdarker)
-input[type=range]::-ms-fill-upper 
-  background: var(--background)
-  border: 0.2px solid var(--bgdarker)
-  border-radius: 2.6px
-  box-shadow: 1px 1px 1px var(--bgdarker), 0px 0px 1px var(--bgdarker)
-input[type=range]::-ms-thumb 
-  box-shadow: 1px 1px 1px var(--bgdarker), 0px 0px 1px var(--bgdarker)
-  border: 1px solid var(--bgdarker)
-  width: var(--thumbWidth)
-  height: var(--thumbHeight)
-  border-radius: 3px
-  background: var(--foreground)
-input[type=range]:focus::-ms-fill-lower 
-  background: var(--background)
-input[type=range]:focus::-ms-fill-upper 
-  background: var(--background)
+  box-shadow: -80px 0 0 80px #ffffff
+input[type='range']::-webkit-slider-thumb
+  -webkit-appearance: none
+  width: 15px
+  height: 15px
+  border-radius: 15px
+  margin-top: -6px
+  background: #000
+  border: 3px solid #eee
+
+
+input[type="range"]::-moz-range-progress
+  background-color: #ffffff
+
+input[type="range"]::-moz-range-track
+  background-color: rgba(255,255,255,0.1)
+
+input[type="range"]::-ms-fill-lower
+  background-color: #ffffff
+
+input[type="range"]::-ms-fill-upper
+  background-color: rgba(255,255,255,0.1)
 
 
 </style>
 <template lang="pug">
   .audio
     .player
-      tooltip.bottom(v-show='!isPlaying', text="Reproducir")
+      tooltip.top(v-show='!isPlaying', text="Reproducir")
         i.material-icons(@click='playPause') play_arrow
       
-      tooltip.bottom(v-show='isPlaying', text="Pausa")
+      tooltip.top(v-show='isPlaying', text="Pausa")
         i.material-icons(@click='playPause') pause
 
-      input(type='range' min='0' max='100' v-model='volume')
-
-      tooltip.bottom(v-show='parseInt(volume, 10)!==0', text="Silenciar")
-        i.material-icons(@click='mute') volume_up
-
-      tooltip.bottom(v-show='parseInt(volume, 10)===0', text="Activar Volumen")
-        i.material-icons(@click='mute') volume_off
+      div.range
+        input(type='range' min='0' max='100' v-model='volume').background
+        input(type='range' min='0' max='100' v-model='volume').foreground
 
       audio(controls='' ref='elPlayer')
         source(src='https://listen.elpodcast.dev' type='audio/mp3')
         | Your browser does not support the audio tag. {{vol}}
-    span.status
-      |Escúchanos en&nbsp;
-      a(href="https://listen.elpodcast.dev", target="blank") https://listen.elpodcast.dev
 </template>
 <script>
 import tooltip from 'Components/tooltip.vue'
@@ -120,7 +86,7 @@ export default {
   data: () => ({
     isPlaying: false,
     player: {},
-    volume: 100,
+    volume: 50,
   }),
   computed: {
     vol () {

@@ -1,26 +1,27 @@
 <style lang="sass" scoped>
 .messages
-  max-width: 100vw
+  width: 100%
   grid-area: messages
+  background-color: var(--bgdarker)
   .messagesHolder
-    padding: 10px
     display: flex
     flex-direction: column-reverse
-    height: 100%
+    height: calc(100% - 20px)
     overflow: auto
+    min-height: 34px
   .message
-    padding: 0 10px
-    line-height: 1.3em
+    padding: 5px 10px
     position: relative
+    display: flex
+    flex-direction: column
     transition: background-color 500ms linear
   .message .userName
-    vertical-align: top
+    font-weight: bold
+    color: #68fdf7
   .message .txtData
-    min-height: 1.3em
     display: inline-block
-    width: calc(100vw - 100px)
-    overflow: hidden
-    text-overflow: ellipsis
+    width: 100%
+    word-break: break-all
   .message i
     position: absolute
     right: 0
@@ -29,20 +30,24 @@
     cursor: pointer
     display: none
   .message:hover
-    background-color: var(--bgdarker)
+    background-color: var(--background)
     i
       display: inline
   .message.SYSTEM
     opacity: 0.5
-    font-size: 0.75em
-    line-height: 1.1em
-    min-height: 1.1em
+    font-size: 0.8em
     font-style: italic
-    text-align: right
+    padding-top: 0
+    padding-bottom: 0
   .message.isMention
-    background-color: var(--bgdarker)
+    background-color: var(--background)
   .message .userName
     cursor: pointer
+  .message img
+    border: 1px solid var(--foreground)
+    width: 100%
+    max-height: 250px
+    object-fit: contain
 </style>
 <template lang="pug">
   .messages
@@ -51,12 +56,21 @@
         span.userName(
           v-if="itm.username !== 'SYSTEM'"
           @click="addToMsg(itm.username)"
-        ) {{itm.username}}: 
-        span.txtData {{itm.message}}
+        ) {{itm.username}}
+        span.txtData
+          template(v-if="itm.blob")
+            img(
+              :src="itm.blob"
+              @click='displayImage(itm.blob)'
+            )
+          template(v-else)
+            |{{itm.message}}
         i.material-icons(@click='clearMessage(itm.uid)') delete_forever
+    messagefield
 </template>
 <script>
 import brain from 'Utils/brain'
+import messagefield from 'Components/messageField.vue'
 import { sendMessage } from 'Utils/comms'
 export default {
   computed: {
@@ -80,6 +94,9 @@ export default {
         token
       })
     },
+    displayImage (blob) {
+      brain.setImage(blob)
+    },
     isMention(item) {
       if (item.username === 'SYSTEM') return ''
       if (item.message.indexOf(`@${brain.get('userName')}`) !== -1) return 'isMention'
@@ -89,6 +106,9 @@ export default {
       this.$root.$emit('addToMsg', userName)
       brain.set({ focusText: true })
     }
+  },
+  components: {
+    messagefield
   }
 }
 </script>

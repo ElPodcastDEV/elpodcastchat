@@ -64,13 +64,24 @@ class Bot {
           this.on('/password', socket, [password])
         }
       },
-      '/getTokenData': (socket, token) => {
+      '/getTokenData': (_socket, token) => {
         if (!token) return false
         const isVerified = this.auth.verifyToken(token)
         if (isVerified) {
           return this.auth.parseToken(token).meta
         }
         return false
+      },
+      '/help': (socket) => {
+        this.sendSystem(socket, '##########################################')
+        this.sendSystem(socket, 'COMANDOS DISPONIBLES:')
+        this.sendSystem(socket, '/register <tupassword> <tuemail>')
+        this.sendSystem(socket, '/password <password>')
+        this.sendSystem(socket, '/changePassword <password> <nuevopassword>')
+        this.sendSystem(socket, '/clear')
+        this.sendSystem(socket, '/logout')
+        this.sendSystem(socket, '##########################################')
+        return
       }
     }
   }

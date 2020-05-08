@@ -1,10 +1,9 @@
 import Vue from 'vue'
 import brain from 'Utils/brain'
 import appheader from 'Components/appheader.vue'
-import interests from 'Components/interests.vue'
 import messages from 'Components/messages.vue'
 import loginmodal from 'Components/loginModal.vue'
-import messagefield from 'Components/messageField.vue'
+import media from 'Components/media.vue'
 import imagepreview from 'Components/imagePreview.vue'
 
 const urlParams = new URLSearchParams(window.location.search)
@@ -18,11 +17,10 @@ document.addEventListener('DOMContentLoaded', function () {
     el: '#app',
     components: {
       appheader,
-      interests,
       messages,
-      messagefield,
       loginmodal,
-      imagepreview
+      imagepreview,
+      media
     },
     mounted () {
       brain.loadData()

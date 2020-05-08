@@ -10,7 +10,7 @@
   justify-content: center
   align-items: center
   .background
-    background-color: var(--background)
+    background-color: var(--bgdarker)
     opacity: 0.8
   .loginWindow
     position: relative
