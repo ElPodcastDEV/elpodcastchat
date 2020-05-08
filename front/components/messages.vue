@@ -45,9 +45,10 @@
     cursor: pointer
   .message img
     border: 1px solid var(--foreground)
-    width: 100%
+    max-width: 100%
     max-height: 250px
     object-fit: contain
+    border-radius: 6px
 </style>
 <template lang="pug">
   .messages

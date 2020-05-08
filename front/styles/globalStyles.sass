@@ -19,12 +19,20 @@ body
   background-size: cover
   height: 100vh
   overflow: hidden
+  position: relative
+.background-video
+  position: absolute
+  top: 0
+  left: 0
+  height: 100vh
+  object-fit: contain
 .app
   height: 100%
   display: grid
+  position: relative
   grid-template-areas: "messages display" "header header"
   grid-template-rows: calc(100% - 70px) 70px
-  grid-template-columns: 300px 1fr
+  grid-template-columns: 400px 1fr
 ::-webkit-scrollbar
   width: 10px
 ::-webkit-scrollbar-track
@@ -32,7 +40,7 @@ body
 ::-webkit-scrollbar-thumb
   background: var(--bgdarker)
 
-@media only screen and (max-width: 800px)
+@media only screen and (max-width: 1000px)
   .interest
     font-size: 0.70em
   .app
