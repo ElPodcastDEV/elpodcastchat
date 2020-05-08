@@ -80,6 +80,7 @@ class Bot {
         this.sendSystem(socket, '/changePassword <password> <nuevopassword>')
         this.sendSystem(socket, '/clear')
         this.sendSystem(socket, '/logout')
+        this.sendSystem(socket, '/img')
         this.sendSystem(socket, '##########################################')
         return
       }
