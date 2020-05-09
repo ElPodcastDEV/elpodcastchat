@@ -19,20 +19,20 @@
       img(:src="src", @click="makeItBigger")
 </template>
 <script>
-  import brain from 'Utils/brain'
-  export default ({
-    computed: {
-      src () {
-        return brain.get('showcaseImage')
-      }
-    },
-    methods: {
-      makeItBigger () {
-        brain.setImage(this.src)
-      }
-    },
-    mounted () {
-      brain.lookForShowcase()
+import brain from 'Utils/brain'
+export default ({
+  computed: {
+    src () {
+      return brain.get('showcaseImage')
     }
-  })
+  },
+  methods: {
+    makeItBigger () {
+      brain.setImage(this.src)
+    }
+  },
+  mounted () {
+    brain.lookForShowcase()
+  }
+})
 </script>

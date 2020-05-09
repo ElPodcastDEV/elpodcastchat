@@ -54,7 +54,7 @@ export default {
         userName: null,
         token: null
       })
-    },
+    }
   },
   components: {
     player,

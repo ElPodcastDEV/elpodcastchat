@@ -53,7 +53,11 @@
 <template lang="pug">
   .messages
     .messagesHolder
-      div(:key='itm.uid' :class="'message ' + itm.username + ' ' + isMention(itm)" v-for='itm in chatMessages')
+      div(
+        :key='itm.uid'
+        :class="'message ' + itm.username + ' ' + isMention(itm)"
+        v-for='itm in chatMessages'
+      )
         span.userName(
           v-if="itm.username !== 'SYSTEM'"
           @click="addToMsg(itm.username)"
@@ -98,12 +102,12 @@ export default {
     displayImage (blob) {
       brain.setImage(blob)
     },
-    isMention(item) {
+    isMention (item) {
       if (item.username === 'SYSTEM') return ''
       if (item.message.indexOf(`@${brain.get('userName')}`) !== -1) return 'isMention'
       return ''
     },
-    addToMsg(userName) {
+    addToMsg (userName) {
       this.$root.$emit('addToMsg', userName)
       brain.set({ focusText: true })
     }

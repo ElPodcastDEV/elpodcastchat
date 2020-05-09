@@ -31,8 +31,8 @@
   form.elform(@submit.prevent='submit' v-if="!isReplaying")
     template(v-if='userName')
       label(for="prompt").prompt
-        span.home ~ 
-        span.username epd 
+        span.home ~&nbsp;
+        span.username epd&nbsp;
         span.branch
           span.par (
           |master
@@ -84,7 +84,9 @@ export default {
   },
   methods: {
     pasting (event) {
-      const items = (event.clipboardData || event.originalEvent.clipboardData).items
+      const items = (
+        event.clipboardData || event.originalEvent.clipboardData
+      ).items
       for (var index in items) {
         const item = items[index]
         if (item.kind === 'file') {
@@ -166,13 +168,13 @@ export default {
         this.historyKey = this.history.length - 1
       }
       this.message = this.history[this.historyKey]
-    },
+    }
   },
   mounted () {
     this.$root.$on('addToMsg', userName => {
-      this.message = (this.message === '') ?
-        `@${userName} ` :
-        this.message + ` @${userName} `
+      this.message = (this.message === '')
+        ? `@${userName} `
+        : this.message + ` @${userName} `
     })
   }
 }

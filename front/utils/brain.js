@@ -40,7 +40,7 @@ const brain = {
     database.set('showcase', blob)
   },
 
-  lookForShowcase() {
+  lookForShowcase () {
     database.get('showcase').then(blob => {
       if (blob) storage.showcaseImage = blob
     })

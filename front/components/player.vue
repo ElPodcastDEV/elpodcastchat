@@ -48,7 +48,6 @@ input[type='range']::-webkit-slider-thumb
   background: #000
   border: 3px solid #eee
 
-
 input[type="range"]::-moz-range-progress
   background-color: #ffffff
 
@@ -61,14 +60,13 @@ input[type="range"]::-ms-fill-lower
 input[type="range"]::-ms-fill-upper
   background-color: rgba(255,255,255,0.1)
 
-
 </style>
 <template lang="pug">
   .audio
     .player
       tooltip.top(v-show='!isPlaying', text="Reproducir")
         i.material-icons(@click='playPause') play_arrow
-      
+
       tooltip.top(v-show='isPlaying', text="Pausa")
         i.material-icons(@click='playPause') pause
 
@@ -86,12 +84,12 @@ export default {
   data: () => ({
     isPlaying: false,
     player: {},
-    volume: 50,
+    volume: 50
   }),
   computed: {
     vol () {
       const volume = this.volume / 100
-      this.player.volume = volume
+      this.player.volume = volume // eslint-disable-line
       return volume
     }
   },

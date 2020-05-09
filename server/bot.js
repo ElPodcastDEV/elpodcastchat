@@ -82,7 +82,6 @@ class Bot {
         this.sendSystem(socket, '/logout')
         this.sendSystem(socket, '/img')
         this.sendSystem(socket, '##########################################')
-        return
       }
     }
   }

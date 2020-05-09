@@ -36,7 +36,7 @@ export default {
   },
   props: {
     display: {
-      default: false,
+      default: false
     },
     action: {
       default: () => () => {}
