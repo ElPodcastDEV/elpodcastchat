@@ -31,11 +31,11 @@
   form.elform(@submit.prevent='submit' v-if="!isReplaying")
     template(v-if='userName')
       label(for="prompt").prompt
-        span.home ~&nbsp;
-        span.username epd&nbsp;
+        span.home {{userName}}
+        span.username @epd&nbsp;
         span.branch
           span.par (
-          |master
+          |{{ep}}
           span.par )
       input(
         ref='fileSelector'
@@ -64,7 +64,8 @@ export default {
     message: '',
     history: [],
     historyKey: 0,
-    reloadMe: true
+    reloadMe: true,
+    ep: 51
   }),
   computed: {
     isReplaying () {
@@ -79,7 +80,12 @@ export default {
       return true
     },
     userName () {
-      return brain.get('userName')
+      const userName = brain.get('userName')
+      if (!userName) return ''
+      if (userName.length > 8) {
+        return userName.slice(0, 8)
+      }
+      return userName
     }
   },
   methods: {
