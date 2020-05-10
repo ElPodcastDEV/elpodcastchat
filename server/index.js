@@ -58,6 +58,9 @@ const customActions = {
     } else if (!socket.reclaiming) {
       broadcastSystem(`${socket.userName} se ha unido!`)
     }
+  },
+  requestSetup: _ => {
+    console.log('mandamos el setup de la db')
   }
 }
 
@@ -93,7 +96,6 @@ io.on('connection', socket => {
     if (customActions[messageType]) {
       return customActions[messageType](socket, nMsg)
     }
-
     io.emit('chat message', nMsg)
   })
 })

@@ -49,3 +49,19 @@ socket.on('system message', msg => {
   data[key] = value
   brain.set(data)
 })
+
+let interval
+const updater = () => {
+  clearTimeout(interval)
+  interval = setTimeout(() => {
+    const token = brain.get('token')
+    const username = brain.get('userName')
+    sendMessage({
+      username,
+      messageType: 'requestSetup',
+      token
+    })
+    updater()
+  }, 3000)
+}
+updater()

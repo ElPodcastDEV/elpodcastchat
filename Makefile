@@ -1,7 +1,7 @@
 start:
 	@if [ -z "$(byobu list-sessions | grep EPDChat)" ]; then\
-		byobu new-session -d -t EPDChat;\
-		byobu rename-window EPDChat;\
+		byobu new -dt EPDChat;\
+		byobu rename-window Workarea;\
 		byobu split-pane -v;\
 		byobu send-keys 'npm run dev' C-m;\
 		byobu resize-pane -D 25;\

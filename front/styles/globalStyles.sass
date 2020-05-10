@@ -10,8 +10,8 @@ body
   --foreground: #eee
   --bgdarker: rgba(0,0,0,0.9)
   font-family: 'TypoPRO Fira Code', sans-serif
-  font-size: 13px
-  line-height: 12px
+  font-size: 14px
+  line-height: 14px
   letter-spacing: 0px
   font-weight: normal
   color: var(--foreground)
@@ -25,14 +25,15 @@ body
   top: 0
   left: 0
   height: 100vh
-  object-fit: contain
+  width: 100vw
+  object-fit: cover
 .app
   height: 100%
   display: grid
   position: relative
-  grid-template-areas: "messages display" "header header"
-  grid-template-rows: calc(100% - 70px) 70px
-  grid-template-columns: 400px 1fr
+  grid-template-areas: "messages display" "messages header"
+  grid-template-rows: 1fr 250px
+  grid-template-columns: 60% 40%
 ::-webkit-scrollbar
   width: 10px
 ::-webkit-scrollbar-track

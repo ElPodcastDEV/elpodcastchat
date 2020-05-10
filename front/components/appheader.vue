@@ -1,16 +1,17 @@
 <style lang="sass" scoped>
 .header
   display: flex
-  justify-content: space-between
-  align-items: center
+  flex-direction: column
   padding: 10px
   background-color: var(--bgdarker)
   color: var(--foreground)
   grid-area: header
 
   .branding
+    width: 100%
     display: flex
     align-items: center
+    margin-bottom: 10px
 
   img
     height: 50px
@@ -23,10 +24,10 @@
 </style>
 <template lang="pug">
   header.header
-    player
-    interests
     span.branding
       img(src='https://cdn.simplecast.com/images/20122399-3919-4089-b540-10f66a258c04/8734f16b-187a-41cb-9a6f-34ff0f2ee6c5/640x640/1551986909artwork.jpg')
+      player
+    interests
 
 </template>
 <script>

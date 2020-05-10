@@ -65,7 +65,7 @@ export default {
     history: [],
     historyKey: 0,
     reloadMe: true,
-    ep: 51
+    ep: 'master'
   }),
   computed: {
     isReplaying () {

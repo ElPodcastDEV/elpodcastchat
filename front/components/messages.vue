@@ -6,7 +6,7 @@
   .messagesHolder
     display: flex
     flex-direction: column-reverse
-    height: calc(100% - 20px)
+    height: calc(100% - 25px)
     overflow: auto
     min-height: 34px
   .message

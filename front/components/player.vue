@@ -1,13 +1,10 @@
 <style lang="sass" scoped>
 .audio
-  width: 150px
-  display: flex
-  flex-direction: column
-  align-items: center
-
+  width: 100%
   .player
     display: flex
     align-items: center
+    justify-content: left
     i
       cursor: pointer
       font-size: 49px

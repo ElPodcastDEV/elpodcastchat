@@ -72,10 +72,15 @@ class Bot {
         }
         return false
       },
-      '/removeShowcase': async (_socket, _params, user) => {
+      '/clearShowcase': async (_socket, _params, user) => {
         const isAdmin = await this.fnIsAdmin(user)
         if (!isAdmin) return
         this.broadcastSystemData('chat-action', 'removeShowcase')
+      },
+      '/setEpisode': async (_socket, [episode], user) => {
+        const isAdmin = await this.fnIsAdmin(user)
+        if (!isAdmin) return
+        this.brain.hset('system-config', 'episode', episode)
       },
       '/help': (socket) => {
         this.sendSystem(socket, '##########################################')
@@ -88,6 +93,15 @@ class Bot {
         this.sendSystem(socket, '/img')
         this.sendSystem(socket, '##########################################')
       }
+    }
+  }
+
+  async getConfig () {
+    const conf = this.brain.hgetall('system-config')
+    if (conf === null) return conf
+    return {
+      episode: 1,
+      hosts: []
     }
   }
 
