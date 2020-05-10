@@ -99,9 +99,9 @@ export default {
         }
       }
     },
-    toggleVIP () {
+    toggleVIP (value) {
       this.message = ''
-      this.imageToVIP = !this.imageToVIP
+      this.imageToVIP = value
       brain.set({
         imageToVIP: this.imageToVIP
       })
@@ -145,7 +145,8 @@ export default {
       const message = this.message.trim()
       if (message === '') return
       if (message === '/img') return this.requestImage()
-      if (message === '/toggleVIP') return this.toggleVIP()
+      if (message === '/sudo') return this.toggleVIP(true)
+      if (message === '/exit') return this.toggleVIP(false)
       if (message === '/pip') return this.requestImage(true)
       if (message === '/clear') return this.clearChat()
       if (message === '/logout') return this.logout()

@@ -72,6 +72,9 @@ class Bot {
         }
         return false
       },
+      '/removeShowcase': () => {
+        this.broadcastSystemData('chat-action', 'removeShowcase')
+      },
       '/help': (socket) => {
         this.sendSystem(socket, '##########################################')
         this.sendSystem(socket, 'COMANDOS DISPONIBLES:')
@@ -112,6 +115,12 @@ class Bot {
   sendSystemData (socket, key, value) {
     socket.emit('system message', JSON.stringify({
       key, value
+    }))
+  }
+
+  broadcastSystemData (key, action, value) {
+    this.io.emit('system message', JSON.stringify({
+      key, action, value
     }))
   }
 

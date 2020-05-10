@@ -41,7 +41,10 @@ socket.on('chat message', msg => {
 })
 
 socket.on('system message', msg => {
-  const { key, value } = JSON.parse(msg)
+  const { key, action, value } = JSON.parse(msg)
+  if (key === 'chat-action') {
+    brain[action](value)
+  }
   const data = {}
   data[key] = value
   brain.set(data)
