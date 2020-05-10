@@ -50,9 +50,9 @@ const uuid = () => {
   return bot.uuid()
 }
 
-const tryCommands = (message, socket) => {
+const tryCommands = (message, socket, user) => {
   const [command, ...params] = message.split(' ')
-  bot.on(command, socket, params)
+  bot.on(command, socket, params, user)
 }
 
 module.exports = {

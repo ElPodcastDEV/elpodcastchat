@@ -72,7 +72,9 @@ class Bot {
         }
         return false
       },
-      '/removeShowcase': () => {
+      '/removeShowcase': async (_socket, _params, user) => {
+        const isAdmin = await this.fnIsAdmin(user)
+        if (!isAdmin) return
         this.broadcastSystemData('chat-action', 'removeShowcase')
       },
       '/help': (socket) => {
@@ -89,11 +91,11 @@ class Bot {
     }
   }
 
-  on (command, socket, params) {
+  on (command, socket, params, user) {
     if (!this.commands[command]) {
       return this.sendSystem(socket, `command ${command} no existe`)
     }
-    return this.commands[command](socket, params)
+    return this.commands[command](socket, params, user)
   }
 
   sendSystem (socket, message) {
@@ -130,6 +132,15 @@ class Bot {
       return v.toString(16)
     })
     return `${new Date().getTime()}-${uid}`
+  }
+
+  async fnIsAdmin (userName) {
+    if (!userName) return false
+    const permissions = await this.brain.hget(
+      userName, 'permissions'
+    ) || JSON.stringify({})
+    const { isAdmin } = JSON.parse(permissions)
+    return isAdmin
   }
 }
 

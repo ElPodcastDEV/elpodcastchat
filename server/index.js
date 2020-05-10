@@ -73,7 +73,9 @@ io.on('connection', socket => {
   socket.on('chat message', async msg => {
     const { message, token, messageType } = JSON.parse(msg)
     const { userName: userFromToken } = getTokenData(token)
-    if (message && message[0] === '/') return tryCommands(message, socket)
+    if (message && message[0] === '/') {
+      return tryCommands(message, socket, userFromToken)
+    }
     if (socket.reclaiming) {
       sendSystem(
         socket,
