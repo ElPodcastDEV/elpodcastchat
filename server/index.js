@@ -1,6 +1,7 @@
 const Brain = require('./brain')
 const {
   sendSystem,
+  sendSystemData,
   broadcastSystem,
   validateNewUser,
   validateToken,
@@ -59,8 +60,13 @@ const customActions = {
       broadcastSystem(`${socket.userName} se ha unido!`)
     }
   },
-  requestSetup: _ => {
-    console.log('mandamos el setup de la db')
+  requestSetup: async (socket) => {
+    const setupData = await brain.hgetall('system-config')
+    sendSystemData(
+      socket,
+      'setupChat',
+      JSON.stringify(setupData)
+    )
   }
 }
 

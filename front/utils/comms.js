@@ -43,7 +43,10 @@ socket.on('chat message', msg => {
 socket.on('system message', msg => {
   const { key, action, value } = JSON.parse(msg)
   if (key === 'chat-action') {
-    brain[action](value)
+    if (brain[action]) {
+      brain[action](value)
+      return
+    }
   }
   const data = {}
   data[key] = value
@@ -56,6 +59,7 @@ const updater = () => {
   interval = setTimeout(() => {
     const token = brain.get('token')
     const username = brain.get('userName')
+    if (!username) return updater()
     sendMessage({
       username,
       messageType: 'requestSetup',

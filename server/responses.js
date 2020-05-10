@@ -6,6 +6,9 @@ let bot = null
 const sendSystem = (socket, message) => {
   bot.sendSystem(socket, message)
 }
+const sendSystemData = (socket, key, value) => {
+  bot.sendSystemData(socket, key, value)
+}
 const broadcastSystem = (socket, message) => {
   bot.broadcastSystem(socket, message)
 }
@@ -57,6 +60,7 @@ const tryCommands = (message, socket, user) => {
 
 module.exports = {
   sendSystem,
+  sendSystemData,
   broadcastSystem,
   sendRegister,
   sendReclaim,

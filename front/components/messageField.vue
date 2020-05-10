@@ -28,7 +28,7 @@
     -webkit-text-fill-color: transparent
 </style>
 <template lang="pug">
-  form.elform(@submit.prevent='submit' v-if="!isReplaying")
+  form.elform(@submit.prevent='submit')
     template(v-if='userName')
       label(for="prompt").prompt
         span.home {{userName}}
@@ -64,13 +64,11 @@ export default {
     message: '',
     history: [],
     historyKey: 0,
-    reloadMe: true,
-    ep: 'master'
+    reloadMe: true
   }),
   computed: {
-    isReplaying () {
-      console.log(brain.get('episode'))
-      return brain.get('episode')
+    ep () {
+      return brain.get('episode') || 'master'
     },
     isFocus () {
       if (brain.get('focusText')) {

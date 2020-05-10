@@ -41,7 +41,6 @@ export default {
       return brain.get('userName')
     },
     isReplaying () {
-      console.log(brain.get('episode'))
       return brain.get('episode')
     }
   },

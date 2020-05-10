@@ -13,7 +13,7 @@ const storage = Vue.observable({
   tmpImg: null,
   displayImage: null,
   showcaseImage: null,
-  episode: null,
+  episode: 0,
   images: []
 })
 
@@ -51,6 +51,11 @@ const brain = {
     })
   },
 
+  setupChat (data) {
+    const chatData = JSON.parse(data)
+    this.set(chatData)
+  },
+
   deleteMessage (msgId) {
     storage.messages = storage.messages.filter(m => m.uid !== msgId)
     this.saveData()
@@ -66,7 +71,15 @@ const brain = {
   },
 
   loadData () {
-    const { userName, messages, token } = JSON.parse(localStorage.data || '{}')
+    const {
+      userName,
+      messages,
+      token,
+      ...data
+    } = JSON.parse(localStorage.data || '{}')
+    if (data.episode) {
+      this.set({ episode: data.episode })
+    }
     if (messages) this.set({ messages })
     if (userName) {
       this.set({ userName })

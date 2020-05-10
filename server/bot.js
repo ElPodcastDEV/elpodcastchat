@@ -18,7 +18,7 @@ class Bot {
         const token = this.auth.generateToken({ userName: socket.userName })
         await this.brain.hset(socket.userName, 'password', password)
         await this.brain.hset(socket.userName, 'email', email)
-        this.sendSystemData(socket, 'token', token)
+        this.sendSystemData(socket, 'token', token, 'token')
         this.sendSystem(socket, 'Listo')
         this.sendSystem(socket, 'Ahora reclama tu username mandando el comando')
         this.sendSystem(socket, '/password <password>')
@@ -39,7 +39,7 @@ class Bot {
           })
           const token = this.auth.generateToken({ userName: socket.userName })
           this.sendSystem(socket, 'Listo ya puedes escribir')
-          this.sendSystemData(socket, 'token', token)
+          this.sendSystemData(socket, 'token', token, 'token')
           return
         }
         this.sendSystem(socket, 'Password incorrecto')
@@ -50,7 +50,7 @@ class Bot {
           const token = this.auth.generateToken({ userName: socket.userName })
           this.sendSystem(socket, 'Contraseña actualizada')
           await this.brain.hset(socket.userName, 'password', newPass)
-          this.sendSystemData(socket, 'token', token)
+          this.sendSystemData(socket, 'token', token, 'token')
           return
         }
         this.sendSystem(socket, 'Password incorrecto')
@@ -77,10 +77,10 @@ class Bot {
         if (!isAdmin) return
         this.broadcastSystemData('chat-action', 'removeShowcase')
       },
-      '/setEpisode': async (_socket, [episode], user) => {
+      '/setupChat': async (_socket, [key, value], user) => {
         const isAdmin = await this.fnIsAdmin(user)
         if (!isAdmin) return
-        this.brain.hset('system-config', 'episode', episode)
+        this.brain.hset('system-config', key, value)
       },
       '/help': (socket) => {
         this.sendSystem(socket, '##########################################')
@@ -128,9 +128,11 @@ class Bot {
     }))
   }
 
-  sendSystemData (socket, key, value) {
+  sendSystemData (socket, action, value, key = 'chat-action') {
     socket.emit('system message', JSON.stringify({
-      key, value
+      key,
+      action,
+      value
     }))
   }
 
