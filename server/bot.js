@@ -77,12 +77,22 @@ class Bot {
         if (!isAdmin) return
         this.broadcastSystemData('chat-action', 'removeShowcase')
       },
-      '/setupChat': async (_socket, [key, value], user) => {
+      '/setupChat': async (socket, [key, value], user) => {
         const isAdmin = await this.fnIsAdmin(user)
         if (!isAdmin) return
-        this.brain.hset('system-config', key, value)
+        if (!key || !value) {
+          return this.reportConfig(socket)
+        }
+        await this.brain.hset('system-config', key, value)
+        this.reportConfig(socket)
       },
-      '/help': (socket) => {
+      '/clearSetupKey': async (socket, [key], user) => {
+        const isAdmin = await this.fnIsAdmin(user)
+        if (!isAdmin || !key) return
+        await this.brain.hdel('system-config', key)
+        this.reportConfig(socket)
+      },
+      '/help': async (socket, params, user) => {
         this.sendSystem(socket, '##########################################')
         this.sendSystem(socket, 'COMANDOS DISPONIBLES:')
         this.sendSystem(socket, '/register <tupassword> <tuemail>')
@@ -92,8 +102,22 @@ class Bot {
         this.sendSystem(socket, '/logout')
         this.sendSystem(socket, '/img')
         this.sendSystem(socket, '##########################################')
+        if (!await this.fnIsAdmin(user)) return
+        this.sendSystem(socket, 'COMANDOS PARA ADMIN')
+        this.sendSystem(socket, '/sudo')
+        this.sendSystem(socket, '/exit')
+        this.sendSystem(socket, '/pip')
+        this.sendSystem(socket, '/clearShowcase')
+        this.sendSystem(socket, '/setupChat')
+        this.sendSystem(socket, '/clearSetupKey')
+        this.sendSystem(socket, '##########################################')
       }
     }
+  }
+
+  async reportConfig (socket) {
+    const current = await this.brain.hgetall('system-config')
+    this.sendSystem(socket, JSON.stringify(current))
   }
 
   async getConfig () {

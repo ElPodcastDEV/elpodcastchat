@@ -4,7 +4,9 @@ const redis = require('redis')
 class Brain {
   constructor () {
     const client = redis.createClient({ host: process.env.DB, port: 6379 })
-    new Array(...['get', 'set', 'hgetall', 'hset', 'hget']).forEach(action => {
+    new Array(
+      ...['get', 'set', 'hgetall', 'hset', 'hget', 'hdel']
+    ).forEach(action => {
       this[action] = promisify(client[action]).bind(client)
     })
     client.on('error', console.log)
