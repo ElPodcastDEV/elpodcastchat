@@ -39,7 +39,7 @@
     .host
       .avatar: img(src="https://pbs.twimg.com/profile_images/1255197922129399808/MWH5ierS_400x400.jpg")
       .details
-        a(href="https://twitter.com/swanros" target="_blank") Swanros
+        a(href="https://twitter.com/swanros" target="_blank") Oscar Swanros
     .host
       .avatar: img(src="https://pbs.twimg.com/profile_images/1221511945305632768/XAxzHh_5_400x400.jpg")
       .details
