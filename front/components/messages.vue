@@ -15,6 +15,7 @@
     display: flex
     flex-direction: column
     transition: background-color 500ms linear
+    flex-shrink: 0
   .message .userName
     font-weight: bold
     color: #68fdf7
