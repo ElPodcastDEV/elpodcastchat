@@ -14,10 +14,18 @@ const storage = Vue.observable({
   displayImage: null,
   showcaseImage: null,
   episode: 0,
-  nGuests: 0,
+  nGuests: 2,
   guests: 'W10=',
   images: []
 })
+
+const uuid = () => {
+  const uid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    var r = Math.random() * 16 | 0; var v = c === 'x' ? r : (r & 0x3 | 0x8)
+    return v.toString(16)
+  })
+  return `${new Date().getTime()}-${uid}`
+}
 
 const brain = {
   get (key) {
@@ -61,6 +69,17 @@ const brain = {
   deleteMessage (msgId) {
     storage.messages = storage.messages.filter(m => m.uid !== msgId)
     this.saveData()
+  },
+
+  systemLocal (message) {
+    const nMessage = {
+      username: 'SYSTEM',
+      uid: uuid(),
+      message
+    }
+    const messages = this.get('messages')
+    messages.unshift(nMessage)
+    this.set({ messages })
   },
 
   saveData () {

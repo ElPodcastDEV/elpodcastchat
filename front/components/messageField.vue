@@ -145,6 +145,14 @@ export default {
         token: null
       })
     },
+    async gif (message) {
+      const url = message.split('/gif ')[1]
+      if (url) {
+        this.message = ''
+        return brain.set({ tmpImg: url })
+      }
+      brain.systemLocal('Usage: /gif <url/to/image.gif>')
+    },
     submit () {
       const message = this.message.trim()
       if (message === '') return
@@ -154,6 +162,9 @@ export default {
       if (message === '/pip') return this.requestImage(true)
       if (message === '/clear') return this.clearChat()
       if (message === '/logout') return this.logout()
+      if (message.slice(0, 4) === '/gif') {
+        return this.gif(message)
+      }
       const token = brain.get('token')
       sendMessage({
         username: brain.get('userName'),

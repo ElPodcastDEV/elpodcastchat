@@ -101,6 +101,7 @@ class Bot {
         this.sendSystem(socket, '/clear')
         this.sendSystem(socket, '/logout')
         this.sendSystem(socket, '/img')
+        this.sendSystem(socket, '/gif <url/a/la/imagen.gif>')
         this.sendSystem(socket, '##########################################')
         if (!await this.fnIsAdmin(user)) return
         this.sendSystem(socket, 'COMANDOS PARA ADMIN')
@@ -109,7 +110,6 @@ class Bot {
         this.sendSystem(socket, '/pip')
         this.sendSystem(socket, '/clearShowcase')
         this.sendSystem(socket, '/setupChat')
-        this.sendSystem(socket, '/clearSetupKey')
         this.sendSystem(socket, '##########################################')
       }
     }
