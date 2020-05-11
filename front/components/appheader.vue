@@ -11,7 +11,7 @@
     width: 100%
     display: flex
     align-items: center
-    margin-bottom: 10px
+    margin-bottom: 5px
 
   img
     height: 50px
@@ -39,9 +39,6 @@ export default {
   computed: {
     userName () {
       return brain.get('userName')
-    },
-    isReplaying () {
-      return brain.get('episode')
     }
   },
   methods: {

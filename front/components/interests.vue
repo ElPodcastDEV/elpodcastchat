@@ -3,8 +3,14 @@
   display: flex
   align-items: center
   width: 100%
+  height: 100%
   .hosts, .links
     width: 50%
+  .hosts
+    display: flex
+    flex-direction: column
+    justify-content: space-evenly
+    height: 100%
   a
     text-decoration: none
     color: var(--foreground)
@@ -13,12 +19,12 @@
     margin: 0
     padding: 0
   li
-    margin-bottom: 10px
+    margin: 10px 0
 
   .host
     display: flex
     align-items: center
-    margin-bottom: 10px
+    margin-bottom: 0
     img
       width: 40px
       height: 40px
@@ -38,6 +44,9 @@
       .avatar: img(src="https://pbs.twimg.com/profile_images/1221511945305632768/XAxzHh_5_400x400.jpg")
       .details
         a(href="https://twitter.com/zerodragon" target="_blank") Zero Dragon
+    .host(v-for="guest in guests")
+      .avatar: img(:src="guest.avatar")
+      .details: a(:href="guest.link" target="_blank") {{guest.name}}
 
   .links
     ul
@@ -62,3 +71,15 @@
           href='https://www.patreon.com/elpodcastdev'
         ) El Patreon
 </template>
+<script>
+import brain from 'Utils/brain'
+export default {
+  computed: {
+    guests () {
+      const nGuests = brain.get('nGuests')
+      const guests = JSON.parse(atob(brain.get('guests')))
+      return guests.slice(0, nGuests)
+    }
+  }
+}
+</script>

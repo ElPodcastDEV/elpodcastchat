@@ -14,6 +14,8 @@ const storage = Vue.observable({
   displayImage: null,
   showcaseImage: null,
   episode: 0,
+  nGuests: 0,
+  guests: 'W10=',
   images: []
 })
 
@@ -74,12 +76,8 @@ const brain = {
     const {
       userName,
       messages,
-      token,
-      ...data
+      token
     } = JSON.parse(localStorage.data || '{}')
-    if (data.episode) {
-      this.set({ episode: data.episode })
-    }
     if (messages) this.set({ messages })
     if (userName) {
       this.set({ userName })
@@ -91,5 +89,5 @@ const brain = {
     }
   }
 }
-
+window.Brain = brain
 export default brain
