@@ -22,11 +22,11 @@ class Bot {
     }
   }
 
-  when (command, callback) {
+  on (command, callback) {
     this.commands[command] = callback
   }
 
-  on (command, socket, params, user) {
+  tryCommand (command, socket, params, user) {
     if (!this.commands[command]) {
       return this.sendSystem(socket, `command ${command} no existe`)
     }

@@ -4,7 +4,7 @@ let brain = null
 let bot = null
 
 const setupResponses = () => {
-  bot.when('/register', async (socket, [password, email]) => {
+  bot.on('/register', async (socket, [password, email]) => {
     if (!password || !email) {
       bot.sendSystem(socket, 'debes especificar un password y email')
       bot.sendSystem(socket, '/register tupassword tuemail')
@@ -22,7 +22,7 @@ const setupResponses = () => {
     bot.sendSystem(socket, '/password <password>')
     bot.sendSystem(socket, 'y así nadie más lo podrá usar hasta que te vayas')
   })
-  bot.when('/password', async (socket, [password]) => {
+  bot.on('/password', async (socket, [password]) => {
     const data = await bot.brain.hget(socket.userName, 'password')
     if (data === password) {
       socket.reclaiming = false
@@ -42,7 +42,7 @@ const setupResponses = () => {
     }
     bot.sendSystem(socket, 'Password incorrecto')
   })
-  bot.when('/changePassword', async (socket, [password, newPass]) => {
+  bot.on('/changePassword', async (socket, [password, newPass]) => {
     const data = await bot.brain.hget(socket.userName, 'password')
     if (data === password) {
       const token = bot.auth.generateToken({ userName: socket.userName })
@@ -53,16 +53,16 @@ const setupResponses = () => {
     }
     bot.sendSystem(socket, 'Password incorrecto')
   })
-  bot.when('/validateToken', async (socket, token) => {
+  bot.on('/validateToken', async (socket, token) => {
     const isVerified = bot.auth.verifyToken(token)
     if (isVerified) {
       const userName = bot.auth.parseToken(token).meta.userName
       socket.userName = userName
       const password = await bot.brain.hget(socket.userName, 'password')
-      bot.on('/password', socket, [password])
+      bot.tryCommand('/password', socket, [password])
     }
   })
-  bot.when('/getTokenData', (_socket, token) => {
+  bot.on('/getTokenData', (_socket, token) => {
     if (!token) return false
     const isVerified = bot.auth.verifyToken(token)
     if (isVerified) {
@@ -70,12 +70,12 @@ const setupResponses = () => {
     }
     return false
   })
-  bot.when('/clearShowcase', async (_socket, _params, user) => {
+  bot.on('/clearShowcase', async (_socket, _params, user) => {
     const isAdmin = await bot.fnIsAdmin(user)
     if (!isAdmin) return
     bot.broadcastSystemData('chat-action', 'removeShowcase')
   })
-  bot.when('/setupChat', async (socket, [key, value], user) => {
+  bot.on('/setupChat', async (socket, [key, value], user) => {
     const isAdmin = await bot.fnIsAdmin(user)
     if (!isAdmin) return
     if (!key || !value) {
@@ -84,13 +84,13 @@ const setupResponses = () => {
     await bot.brain.hset('system-config', key, value)
     bot.reportConfig(socket)
   })
-  bot.when('/clearSetupKey', async (socket, [key], user) => {
+  bot.on('/clearSetupKey', async (socket, [key], user) => {
     const isAdmin = await bot.fnIsAdmin(user)
     if (!isAdmin || !key) return
     await bot.brain.hdel('system-config', key)
     bot.reportConfig(socket)
   })
-  bot.when('/help', async (socket, params, user) => {
+  bot.on('/help', async (socket, params, user) => {
     bot.sendSystem(socket, '##########################################')
     bot.sendSystem(socket, 'COMANDOS DISPONIBLES:')
     bot.sendSystem(socket, '/register <tupassword> <tuemail>')
@@ -153,10 +153,10 @@ const validateNewUser = async (socket, currentUser) => {
 }
 
 const validateToken = async (socket, token) => {
-  return bot.on('/validateToken', socket, token)
+  return bot.tryCommand('/validateToken', socket, token)
 }
 const getTokenData = (token) => {
-  return bot.on('/getTokenData', null, token)
+  return bot.tryCommand('/getTokenData', null, token)
 }
 const uuid = () => {
   return bot.uuid()
@@ -164,7 +164,7 @@ const uuid = () => {
 
 const tryCommands = (message, socket, user) => {
   const [command, ...params] = message.split(' ')
-  bot.on(command, socket, params, user)
+  bot.tryCommand(command, socket, params, user)
 }
 
 module.exports = {
