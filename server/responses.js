@@ -111,7 +111,40 @@ const setupResponses = () => {
     bot.sendSystem(socket, '##########################################')
   })
   bot.on('git', async (socket, params, user) => {
-    console.log(params)
+    const [action, ...rest] = params
+    const execute = {
+      checkout: ([_mod, branch = _mod]) => {
+        bot.brain.hset('system-config', 'episode', branch)
+      },
+      users: ([action, ...rest]) => {
+        const usersExecution = {
+          add: async ([name, link, avatar]) => {
+            if (name === undefined) return
+            const usersRaw = await bot.brain.hget('system-config', 'guests')
+            const users = JSON.parse(
+              Buffer.from(usersRaw, 'base64').toString('utf8')
+            )
+            users.push({ name, link, avatar })
+            const guest = Buffer.from(JSON.stringify(users)).toString('base64')
+            bot.brain.hset('system-config', 'guests', guest)
+          },
+          del: async ([username]) => {
+            const usersRaw = await bot.brain.hget('system-config', 'guests')
+            const users = JSON.parse(
+              Buffer.from(usersRaw, 'base64').toString('utf8')
+            )
+            let guests = users.filter(u => u.name !== username)
+            guests = Buffer.from(JSON.stringify(guests)).toString('base64')
+            bot.brain.hset('system-config', 'guests', guests)
+          }
+        }
+        if (!usersExecution[action]) return
+        usersExecution[action](rest)
+      }
+    }
+    if (!execute[action]) return
+    execute[action](rest)
+    bot.commands['/setupChat'](socket, [], user)
   })
 }
 

@@ -144,6 +144,7 @@ export default {
         userName: null,
         token: null
       })
+      document.location.href = (() => document.location.href)()
     },
     async gif (message) {
       const url = message.split('/gif ')[1]
