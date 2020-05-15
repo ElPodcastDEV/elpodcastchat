@@ -110,6 +110,9 @@ const setupResponses = () => {
     bot.sendSystem(socket, '/setupChat')
     bot.sendSystem(socket, '##########################################')
   })
+  bot.on('git', async (socket, params, user) => {
+    console.log(params)
+  })
 }
 
 const sendSystem = (socket, message) => {
@@ -121,6 +124,7 @@ const sendSystemData = (socket, key, value) => {
 const broadcastSystem = (socket, message) => {
   bot.broadcastSystem(socket, message)
 }
+const fnIsAdmin = user => bot.fnIsAdmin(user)
 
 const sendRegister = (socket, currentUser) => {
   bot.sendSystem(socket, `Este username (${currentUser}) NO está registrado`)
@@ -177,6 +181,7 @@ module.exports = {
   validateToken,
   getTokenData,
   tryCommands,
+  fnIsAdmin,
   uuid,
   initializeBrain: (inputBrain, io) => {
     brain = inputBrain

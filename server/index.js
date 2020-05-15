@@ -8,6 +8,7 @@ const {
   getTokenData,
   tryCommands,
   initializeBrain,
+  fnIsAdmin,
   uuid
 } = require('./responses')
 
@@ -16,19 +17,10 @@ const { io } = require('./webserver')
 const brain = new Brain()
 initializeBrain(brain, io)
 
-const fnIsAdmin = async (msg) => {
-  const { userFromToken: userName } = JSON.parse(msg)
-  if (!userName) return false
-  const permissions = await brain.hget(
-    userName, 'permissions'
-  ) || JSON.stringify({})
-  const { isAdmin } = JSON.parse(permissions)
-  return isAdmin
-}
-
 const customActions = {
   deleteMessage: async (_socket, msg) => {
-    if (await fnIsAdmin(msg)) {
+    const user = JSON.parse(msg)
+    if (await fnIsAdmin(user.userFromToken)) {
       io.emit('chat message', msg)
     }
   },
@@ -36,7 +28,8 @@ const customActions = {
     io.emit('chat message', msg)
   },
   sendImageVIP: async (socket, msg) => {
-    if (await fnIsAdmin(msg)) {
+    const user = JSON.parse(msg)
+    if (await fnIsAdmin(user.userFromToken)) {
       io.emit('chat message', msg)
     } else {
       sendSystem(
@@ -84,6 +77,11 @@ io.on('connection', socket => {
     const { userName: userFromToken } = getTokenData(token)
     if (message && message[0] === '/') {
       return tryCommands(message, socket, userFromToken)
+    }
+    if (message && message.slice(0, 4) === 'git ') {
+      if (await fnIsAdmin(userFromToken)) {
+        tryCommands(message, socket, userFromToken)
+      }
     }
     if (socket.reclaiming) {
       sendSystem(
