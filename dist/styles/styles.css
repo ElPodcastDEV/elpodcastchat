@@ -10,9 +10,17 @@ html {
 }
 
 body {
-  --background: #446;
-  --foreground: #eee;
+  --background: #444466;
+  --foreground: #eeeeee;
+  --white: #FFFFFF;
+  --black: #000000;
+  --teal: #68fdf7;
   --bgdarker: rgba(0,0,0,0.9);
+  --playerbg: rgba(255,255,255,0.1);
+  --home: #61fa68;
+  --pare: #5971ff;
+  --bran: #ff6e67;
+  --red: #FF0000;
   font-family: "TypoPRO Fira Code", sans-serif;
   font-size: 14px;
   line-height: 14px;

@@ -3,6 +3,7 @@
   width: 100%
   grid-area: messages
   background-color: var(--bgdarker)
+  color: var(--foreground)
   .messagesHolder
     display: flex
     flex-direction: column-reverse
@@ -18,7 +19,7 @@
     flex-shrink: 0
   .message .userName
     font-weight: bold
-    color: #68fdf7
+    color: var(--teal)
   .message .txtData
     display: inline-block
     width: 100%

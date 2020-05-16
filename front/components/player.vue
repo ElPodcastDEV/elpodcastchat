@@ -26,7 +26,7 @@ input[type='range'].background
 input[type='range']
   -webkit-appearance: none
   width: 100%
-  background-color: rgba(255,255,255,0.1)
+  background-color: var(--playerbg)
 input[type='range']::-webkit-slider-runnable-track
   -webkit-appearance: none
   height: 4px
@@ -35,27 +35,27 @@ input[type='range'].background::-webkit-slider-thumb
   width: 15px
   height: 15px
   background: transparent
-  box-shadow: -80px 0 0 80px #ffffff
+  box-shadow: -80px 0 0 80px var(--white)
 input[type='range']::-webkit-slider-thumb
   -webkit-appearance: none
   width: 15px
   height: 15px
   border-radius: 15px
   margin-top: -6px
-  background: #000
-  border: 3px solid #eee
+  background: var(--black)
+  border: 3px solid var(--foreground)
 
 input[type="range"]::-moz-range-progress
-  background-color: #ffffff
+  background-color: var(--white)
 
 input[type="range"]::-moz-range-track
-  background-color: rgba(255,255,255,0.1)
+  background-color: var(--playerbg)
 
 input[type="range"]::-ms-fill-lower
-  background-color: #ffffff
+  background-color: var(--white)
 
 input[type="range"]::-ms-fill-upper
-  background-color: rgba(255,255,255,0.1)
+  background-color: var(--playerbg)
 
 </style>
 <template lang="pug">

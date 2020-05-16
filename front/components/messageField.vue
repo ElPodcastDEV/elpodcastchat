@@ -10,20 +10,20 @@
     line-height: 18px
     white-space: nowrap
     .username
-      color: #68fdf7
+      color: var(--teal)
       font-weight: 800
     .home
-      color: #61fa68
+      color: var(--home)
     .par
-      color: #5971ff
+      color: var(--pare)
     .branch
-      color: #ff6e67
+      color: var(--bran)
   input
     border: 0
     padding: 0 0 0 5px
     flex-grow: 1
     background-color: transparent
-    color: red
+    color: var(--red)
     text-shadow: 0px 0px 0px var(--foreground)
     -webkit-text-fill-color: transparent
 </style>
@@ -52,6 +52,7 @@
         @paste='pasting'
         ref='textInput'
         :is-focus='isFocus'
+        spellcheck='false'
       )
 </template>
 <script>
@@ -147,7 +148,7 @@ export default {
       document.location.href = (() => document.location.href)()
     },
     async gif (message) {
-      const url = message.split('/gif ')[1]
+      const [, url] = message.split('/gif ')
       if (url) {
         this.message = ''
         return brain.set({ tmpImg: url })
