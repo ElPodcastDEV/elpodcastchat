@@ -21,7 +21,7 @@ body {
   --pare: #5971ff;
   --bran: #ff6e67;
   --red: #FF0000;
-  font-family: "TypoPRO Fira Code", sans-serif;
+  font-family: "Fira Code", monospace, sans-serif;
   font-size: 14px;
   line-height: 14px;
   letter-spacing: 0px;
