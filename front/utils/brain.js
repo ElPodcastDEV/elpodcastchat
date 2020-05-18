@@ -55,6 +55,15 @@ const brain = {
     database.del('showcase')
   },
 
+  triggerLogout () {
+    brain.set({
+      oldUsername: null,
+      userName: null,
+      token: null
+    })
+    document.location.href = (() => document.location.href)()
+  },
+
   lookForShowcase () {
     database.get('showcase').then(blob => {
       if (blob) storage.showcaseImage = blob

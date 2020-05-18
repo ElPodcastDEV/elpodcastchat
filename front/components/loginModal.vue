@@ -15,7 +15,10 @@ form button
     form.loginWindow(@submit.prevent='setUsername')
       | Por favor indica tu nombre de usuario
       div
-        input(v-model='loginUserName')
+        input(
+          v-model='loginUserName'
+          autofocus
+        )
         button Entrar
 </template>
 <script>

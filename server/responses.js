@@ -117,6 +117,18 @@ const setupResponses = () => {
       checkout: ([_mod, branch = _mod]) => {
         if (!isAdmin) return
         bot.brain.hset('system-config', 'episode', branch)
+        bot.commands['/setupChat'](socket, [], user)
+      },
+      commit: ([_mod, ..._message]) => {
+        if (!_message) return
+        if (!isAdmin) return
+        const message = _message.join(' ')
+        brain.hset(
+          'system-config',
+          'branchMessage',
+          message.replace(/^"(.*)"$/, '$1')
+        )
+        bot.commands['/setupChat'](socket, [], user)
       },
       users: ([action, ...rest]) => {
         if (!isAdmin) return
@@ -143,14 +155,15 @@ const setupResponses = () => {
         }
         if (!usersExecution[action]) return
         usersExecution[action](rest)
+        bot.commands['/setupChat'](socket, [], user)
       },
-      status: () => {
-        bot.broadcastResponse('Hola')
+      status: async () => {
+        const data = await brain.hgetall('system-config')
+        bot.broadcastResponse(data.branchMessage)
       }
     }
     if (!execute[action]) return
     execute[action](rest)
-    bot.commands['/setupChat'](socket, [], user)
   })
 }
 
