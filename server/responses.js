@@ -159,6 +159,7 @@ const setupResponses = () => {
       },
       status: async () => {
         const data = await brain.hgetall('system-config')
+        bot.broadcastResponse(`On branch ${data.episode}`)
         bot.broadcastResponse(data.branchMessage)
       }
     }
