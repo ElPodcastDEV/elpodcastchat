@@ -38,12 +38,15 @@ const customActions = {
       )
     }
   },
-  userNameChange: async (socket, msg) => {
-    const { current, token } = JSON.parse(msg)
+  logout: async (socket) => {
     if (!socket.reclaiming && socket.userName) {
       brain.hset(socket.userName, 'online', false)
       broadcastSystem(`${socket.userName} se ha ido`)
     }
+  },
+  userNameChange: async (socket, msg) => {
+    const { current, token } = JSON.parse(msg)
+    customActions.logout(socket)
     socket.reclaiming = false
     await validateNewUser(socket, current)
     if (token) {
@@ -79,9 +82,7 @@ io.on('connection', socket => {
       return tryCommands(message, socket, userFromToken)
     }
     if (message && message.slice(0, 4) === 'git ') {
-      if (await fnIsAdmin(userFromToken)) {
-        tryCommands(message, socket, userFromToken)
-      }
+      tryCommands(message, socket, userFromToken)
     }
     if (socket.reclaiming) {
       sendSystem(

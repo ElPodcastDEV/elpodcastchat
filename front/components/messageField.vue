@@ -139,9 +139,12 @@ export default {
       brain.set({ messages: [] })
     },
     logout () {
-      this.message = ''
+      sendMessage({
+        messageType: 'logout',
+        current: brain.get('userName')
+      })
       brain.set({
-        oldUsername: this.username,
+        oldUsername: null,
         userName: null,
         token: null
       })

@@ -63,6 +63,14 @@ class Bot {
     }))
   }
 
+  broadcastResponse (message) {
+    this.io.emit('chat message', JSON.stringify({
+      username: 'El Podcast Bot',
+      uid: this.uuid(),
+      message
+    }))
+  }
+
   uuid () {
     const uid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
       var r = Math.random() * 16 | 0; var v = c === 'x' ? r : (r & 0x3 | 0x8)

@@ -112,11 +112,14 @@ const setupResponses = () => {
   })
   bot.on('git', async (socket, params, user) => {
     const [action, ...rest] = params
+    const isAdmin = await bot.fnIsAdmin(user)
     const execute = {
       checkout: ([_mod, branch = _mod]) => {
+        if (!isAdmin) return
         bot.brain.hset('system-config', 'episode', branch)
       },
       users: ([action, ...rest]) => {
+        if (!isAdmin) return
         const usersExecution = {
           add: async ([name, link, avatar]) => {
             if (name === undefined) return
@@ -140,6 +143,9 @@ const setupResponses = () => {
         }
         if (!usersExecution[action]) return
         usersExecution[action](rest)
+      },
+      status: () => {
+        bot.broadcastResponse('Hola')
       }
     }
     if (!execute[action]) return
