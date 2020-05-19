@@ -5,7 +5,17 @@ class Brain {
   constructor () {
     const client = redis.createClient({ host: process.env.DB, port: 6379 })
     new Array(
-      ...['get', 'set', 'hgetall', 'hset', 'hget', 'hdel']
+      ...[
+        'get',
+        'set',
+        'del',
+        'hgetall',
+        'hset',
+        'hget',
+        'hdel',
+        'lpush',
+        'lrange'
+      ]
     ).forEach(action => {
       this[action] = promisify(client[action]).bind(client)
     })

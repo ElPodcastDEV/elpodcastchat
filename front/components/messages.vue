@@ -20,6 +20,8 @@
   .message .userName
     font-weight: bold
     color: var(--teal)
+  .message.El.Bot .userName
+      color: var(--bot)
   .message .txtData
     display: inline-block
     width: 100%

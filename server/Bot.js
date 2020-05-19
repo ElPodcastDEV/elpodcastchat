@@ -65,7 +65,7 @@ class Bot {
 
   broadcastResponse (message) {
     this.io.emit('chat message', JSON.stringify({
-      username: '',
+      username: 'El Bot',
       uid: this.uuid(),
       message
     }))

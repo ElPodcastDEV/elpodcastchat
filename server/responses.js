@@ -100,6 +100,8 @@ const setupResponses = () => {
     bot.sendSystem(socket, '/logout')
     bot.sendSystem(socket, '/img')
     bot.sendSystem(socket, '/gif <url/a/la/imagen.gif>')
+    bot.sendSystem(socket, '/git status')
+    bot.sendSystem(socket, '/git titles add "El título que quieras proponer"')
     bot.sendSystem(socket, '##########################################')
     if (!await bot.fnIsAdmin(user)) return
     bot.sendSystem(socket, 'COMANDOS PARA ADMIN')
@@ -130,6 +132,29 @@ const setupResponses = () => {
         )
         bot.commands['/setupChat'](socket, [], user)
       },
+      push: async _ => {
+        if (!isAdmin) return
+        bot.brain.del('system-config-titles')
+        await bot.brain.hset('system-config', 'branchMessage', '')
+        bot.brain.hset('system-config', 'guests', 'W10=')
+        bot.broadcastSystem('Pusheado a origin')
+      },
+      titles: ([action, ...rest]) => {
+        const titlesExecution = {
+          add: _title => {
+            const title = _title.join(' ').replace(/^"(.*)"$/, '$1')
+            bot.brain.lpush('system-config-titles', title)
+            bot.sendSystem(socket, 'Título recibodo Recibido')
+          },
+          del: _ => {
+            if (!isAdmin) return
+            bot.brain.del('system-config-titles')
+            bot.sendSystem(socket, 'Títulos eliminados')
+          }
+        }
+        if (!titlesExecution[action]) return
+        titlesExecution[action](rest)
+      },
       users: ([action, ...rest]) => {
         if (!isAdmin) return
         const usersExecution = {
@@ -157,10 +182,17 @@ const setupResponses = () => {
         usersExecution[action](rest)
         bot.commands['/setupChat'](socket, [], user)
       },
-      status: async () => {
+      status: async socket => {
         const data = await brain.hgetall('system-config')
+        const titles = await brain.lrange('system-config-titles', 0, -1)
         bot.broadcastResponse(`On branch ${data.episode}`)
-        bot.broadcastResponse(data.branchMessage)
+        if (titles.length > 0) {
+          bot.broadcastSystem('Títulos potenciales:')
+          titles.forEach(title => {
+            bot.broadcastSystem(`- ${title}`)
+          })
+        }
+        bot.broadcastSystem(data.branchMessage)
       }
     }
     if (!execute[action]) return

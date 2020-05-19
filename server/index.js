@@ -46,7 +46,7 @@ const customActions = {
   },
   userNameChange: async (socket, msg) => {
     const { current, token } = JSON.parse(msg)
-    if (current === 'El Podcast Bot') {
+    if (current === 'El Bot') {
       sendSystem(socket, 'Nombre de usuario reservado')
       return sendSystemData(socket, 'triggerLogout')
     }

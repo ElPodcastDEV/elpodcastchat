@@ -25,6 +25,11 @@
     display: flex
     align-items: center
     margin-bottom: 0
+    .link
+      display: block
+      margin-top: 3px
+      font-size: 0.8em
+      opacity: 0.8
     img
       width: 40px
       height: 40px
@@ -40,13 +45,17 @@
       .avatar: img(src="https://pbs.twimg.com/profile_images/1255197922129399808/MWH5ierS_400x400.jpg")
       .details
         a(href="https://twitter.com/swanros" target="_blank") Oscar Swanros
+        a(href="https://twitter.com/swanros" target="_blank").link @Swanros
     .host
       .avatar: img(src="https://pbs.twimg.com/profile_images/1221511945305632768/XAxzHh_5_400x400.jpg")
       .details
         a(href="https://twitter.com/zerodragon" target="_blank") Zero Dragon
+        a(href="https://twitter.com/zerodragon" target="_blank").link @ZeroDragon
     .host(v-for="guest in guests")
       .avatar: img(:src="guest.avatar")
-      .details: a(:href="guest.link" target="_blank") {{guest.name}}
+      .details
+        a(:href="guest.link" target="_blank") {{guest.name}}
+        a(:href="guest.link" target="_blank").link {{guest.handle}}
 
   .links
     ul
@@ -78,7 +87,16 @@ export default {
     guests () {
       const nGuests = brain.get('nGuests')
       const guests = JSON.parse(atob(brain.get('guests')))
-      return guests.slice(0, nGuests)
+      return guests
+        .slice(0, nGuests)
+        .map(g => {
+          g.handle = 'website'
+          if (g.link.includes('twitter.com')) {
+            const [userHandle] = (g.link.split('/')).reverse()
+            g.handle = `@${userHandle}`
+          }
+          return g
+        })
     }
   }
 }
