@@ -63,7 +63,7 @@
         a(
           target="blank"
           href="https://listen.elpodcast.dev"
-        ) Eschúchanos
+        ) Escúchanos
       li
         a(
           target='_blank'

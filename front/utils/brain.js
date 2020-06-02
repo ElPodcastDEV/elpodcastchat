@@ -33,6 +33,7 @@ const brain = {
   },
 
   set (stateObj) {
+    if (!stateObj) return
     Object.keys(stateObj).forEach(key => {
       let item = stateObj[key]
       if (typeof item === 'object') item = JSON.parse(JSON.stringify(item))
@@ -47,7 +48,13 @@ const brain = {
 
   setShowcase (blob) {
     storage.showcaseImage = blob
-    database.set('showcase', blob)
+    database.set(
+      'showcase',
+      JSON.stringify({
+        blob,
+        expiration: new Date().getTime() + 8.64e7
+      })
+    )
   },
 
   removeShowcase () {
@@ -65,8 +72,17 @@ const brain = {
   },
 
   lookForShowcase () {
-    database.get('showcase').then(blob => {
-      if (blob) storage.showcaseImage = blob
+    return database.get('showcase').then(data => {
+      if (!data) return null
+      try {
+        const { blob, expiration } = JSON.parse(data)
+        if (expiration < new Date().getTime()) return null
+        storage.showcaseImage = blob
+        return blob
+      } catch (e) {
+        // deprecated format of blob, no action taken
+        return null
+      }
     })
   },
 
