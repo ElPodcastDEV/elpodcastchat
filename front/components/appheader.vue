@@ -24,15 +24,15 @@
 </style>
 <template lang="pug">
   header.header
-    span.branding
-      img(src='https://cdn.simplecast.com/images/20122399-3919-4089-b540-10f66a258c04/8734f16b-187a-41cb-9a6f-34ff0f2ee6c5/640x640/1551986909artwork.jpg')
+    //- span.branding
+      img(src='/epdlogo.png')
       player
     interests
 
 </template>
 <script>
 import brain from 'Utils/brain'
-import player from 'Components/player.vue'
+// import player from 'Components/player.vue'
 import interests from 'Components/interests.vue'
 import tooltip from 'Components/tooltip.vue'
 export default {
@@ -54,7 +54,7 @@ export default {
     }
   },
   components: {
-    player,
+    // player,
     tooltip,
     interests
   }

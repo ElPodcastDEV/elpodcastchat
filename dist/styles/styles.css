@@ -50,8 +50,8 @@ body {
   display: grid;
   position: relative;
   grid-template-areas: "messages display" "messages header";
-  grid-template-rows: 1fr 250px;
-  grid-template-columns: 60% 40%;
+  grid-template-rows: 1fr 200px;
+  grid-template-columns: 40% 60%;
 }
 
 ::-webkit-scrollbar {
@@ -71,7 +71,7 @@ body {
     height: 100%;
     display: grid;
     grid-template-areas: "display" "messages" "header";
-    grid-template-rows: 25% calc(75% - 250px) 250px;
+    grid-template-rows: 25% calc(75% - 200px) 200px;
     grid-template-columns: 1fr;
   }
 }

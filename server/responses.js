@@ -144,7 +144,7 @@ const setupResponses = () => {
           add: _title => {
             const title = _title.join(' ').replace(/^"(.*)"$/, '$1')
             bot.brain.lpush('system-config-titles', title)
-            bot.sendSystem(socket, 'Título recibodo Recibido')
+            bot.sendSystem(socket, 'Título recibido')
           },
           del: _ => {
             if (!isAdmin) return
