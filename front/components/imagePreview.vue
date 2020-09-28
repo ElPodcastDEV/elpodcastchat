@@ -67,9 +67,8 @@ export default {
     },
     sendImg () {
       const token = brain.get('token')
-      const isVIP = brain.get('imageToVIP') ? 'VIP' : ''
       sendMessage({
-        messageType: `sendImage${isVIP}`,
+        messageType: 'sendImage',
         username: brain.get('userName'),
         message: this.tmpImg,
         token

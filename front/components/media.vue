@@ -29,38 +29,14 @@
 </template>
 <script>
 import brain from 'Utils/brain'
-import { sendMessage } from 'Utils/comms'
 export default ({
   data: () => ({
     countDowntoSeed: null
   }),
   computed: {
     src () {
-      return brain.get('showcaseImage')
+      return brain.get('stream')
     }
-  },
-  methods: {
-    lookForShowcase () {
-      if (this.countDownToSeed) clearTimeout(this.countDownToSeed)
-      this.countDownToSeed = setTimeout(() => {
-        this.lookForShowcase()
-      }, 6e4)
-      brain.lookForShowcase().then(blob => {
-        if (blob === null) return
-        const token = brain.get('token')
-        const isVIP = brain.get('imageToVIP') ? 'VIP' : ''
-        if (isVIP !== 'VIP' || !token) return
-        sendMessage({
-          messageType: `sendImage${isVIP}`,
-          username: brain.get('userName'),
-          message: blob,
-          token
-        })
-      })
-    }
-  },
-  mounted () {
-    this.lookForShowcase()
   }
 })
 </script>

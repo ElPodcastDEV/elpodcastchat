@@ -14,6 +14,7 @@ const storage = Vue.observable({
   displayImage: null,
   showcaseImage: null,
   episode: 0,
+  stream: null,
   nGuests: 2,
   guests: 'W10=',
   images: []

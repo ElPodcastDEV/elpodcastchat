@@ -121,6 +121,13 @@ const setupResponses = () => {
         bot.brain.hset('system-config', 'episode', branch)
         bot.commands['/setupChat'](socket, [], user)
       },
+      config: ([key, ...rest]) => {
+        if (!rest) return
+        if (!isAdmin) return
+        const value = rest.join(' ')
+        brain.hset('system-config', key, value)
+        bot.commands['/setupChat'](socket, [], user)
+      },
       commit: ([_mod, ..._message]) => {
         if (!_message) return
         if (!isAdmin) return
@@ -137,6 +144,7 @@ const setupResponses = () => {
         bot.brain.del('system-config-titles')
         await bot.brain.hset('system-config', 'branchMessage', '')
         bot.brain.hset('system-config', 'guests', 'W10=')
+        bot.brain.hset('system-config', 'stream', '')
         bot.broadcastSystem('Pusheado a origin')
       },
       titles: ([action, ...rest]) => {

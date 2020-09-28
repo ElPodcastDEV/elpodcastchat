@@ -110,6 +110,8 @@ export default {
       brain.set({
         imageToVIP: this.imageToVIP
       })
+      if (value) brain.systemLocal('you are super user')
+      else brain.systemLocal('you are mortal')
     },
     requestImage (vip = false) {
       this.message = ''
