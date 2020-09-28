@@ -22,7 +22,6 @@
         :src="'https://www.youtube.com/embed/'+src+'?autoplay=1'"
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
       )
     template(v-else)
       img(src="https://image.simplecastcdn.com/images/53d4a887-fd21-4ef7-b720-a934c95e03b1/f1bdc6b2-9cfc-40c1-b4f5-b38e508e0cc4/640x640/white-on-black.jpg")

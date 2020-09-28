@@ -79,6 +79,11 @@
           target='_blank'
           href='https://www.patreon.com/elpodcastdev'
         ) El Patreon
+      li
+        a(
+          target="_blank"
+          href="https://tienda.elpodcast.dev"
+        ) Tienda
 </template>
 <script>
 import brain from 'Utils/brain'
