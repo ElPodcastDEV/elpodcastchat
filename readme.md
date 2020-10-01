@@ -1,7 +1,7 @@
 EL podcast Chat
 ===============
 
-Este es un chat para el podcast...
+Este es un asombroso, magnifico chat para el super podcast manager...
 Configurale tu stream, tu logo y el nombre de tu podcast y listo
 
 Súbelo a tu heroku o a tu server favorito
