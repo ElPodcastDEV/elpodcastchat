@@ -61,11 +61,6 @@
     ul
       li
         a(
-          target="blank"
-          href="https://listen.elpodcast.dev"
-        ) Escúchanos
-      li
-        a(
           target='_blank'
           href='https://elpodcast.dev'
         ) ElPodcast.DEV
@@ -73,7 +68,7 @@
         a(
           target='_blank'
           href='https://twitter.com/_elpodcast'
-        ) @_elpodcast
+        ) El Twitter
       li
         a(
           target='_blank'
@@ -83,7 +78,12 @@
         a(
           target="_blank"
           href="https://tienda.elpodcast.dev"
-        ) Tienda
+        ) La Tienda
+      li
+        a(
+          target="_blank"
+          href="https://elnewsletter.dev"
+        ) El Newsletter
 </template>
 <script>
 import brain from 'Utils/brain'
