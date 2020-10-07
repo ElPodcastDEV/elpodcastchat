@@ -84,6 +84,11 @@
           target="_blank"
           href="https://elnewsletter.dev"
         ) El Newsletter
+      li
+        a(
+          target="_blank"
+          href="https://youtube.com/elpodcastdev"
+        ) El Youtube
 </template>
 <script>
 import brain from 'Utils/brain'
