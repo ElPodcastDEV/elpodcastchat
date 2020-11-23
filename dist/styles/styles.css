@@ -53,6 +53,9 @@ body {
   grid-template-rows: 1fr 200px;
   grid-template-columns: 40% 60%;
 }
+.app.isStandAlone {
+  grid-template-columns: 100% 0;
+}
 
 ::-webkit-scrollbar {
   width: 10px;
@@ -73,5 +76,8 @@ body {
     grid-template-areas: "display" "messages" "header";
     grid-template-rows: 25% calc(75% - 200px) 200px;
     grid-template-columns: 1fr;
+  }
+  .app.isStandAlone {
+    grid-template-rows: 0 100% 0;
   }
 }

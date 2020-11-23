@@ -25,3 +25,13 @@ document.addEventListener('DOMContentLoaded', function () {
   })
   return vue
 })
+
+if (new URLSearchParams(window.location.search).get('standalone') === 'true') {
+  const doDelete = () => {
+    const items = [...document.querySelectorAll('video, .header, .embed')]
+    if (items.length !== 3) return setTimeout(doDelete, 1000)
+    items.forEach(i => i.remove())
+    document.querySelector('.app').classList.add('isStandAlone')
+  }
+  doDelete()
+}
