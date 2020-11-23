@@ -26,10 +26,13 @@ document.addEventListener('DOMContentLoaded', function () {
   return vue
 })
 
-if (new URLSearchParams(window.location.search).get('standalone') === 'true') {
+const queryParams = new URLSearchParams(window.location.search)
+if (queryParams.get('standalone') === 'true') {
   const doDelete = () => {
-    const items = [...document.querySelectorAll('video, .header, .embed')]
-    if (items.length !== 3) return setTimeout(doDelete, 1000)
+    const toDelete = ['video', '.header', '.embed']
+    if (queryParams.get('nologin') === 'true') toDelete.push('.modal')
+    const items = [...document.querySelectorAll(toDelete.join(', '))]
+    if (items.length !== toDelete.length) return setTimeout(doDelete, 1000)
     items.forEach(i => i.remove())
     document.querySelector('.app').classList.add('isStandAlone')
   }
