@@ -2,6 +2,8 @@
 
 import io from 'socket.io-client'
 import brain from 'Utils/brain'
+import Bot from 'Utils/texttospeech'
+const bot = new Bot()
 
 const socket = io()
 
@@ -12,6 +14,20 @@ export const sendMessage = params => {
 export const getStatus = async () => {
   const response = await fetch('/status')
   return response.json()
+}
+
+const trySpeak = (user, message) => {
+  const queryParams = new URLSearchParams(window.location.search)
+  if (queryParams.get('speaker') !== 'true') return
+  const trigger = '!s '
+  if (user === 'SYSTEM' || message.slice(0, trigger.length) !== trigger) return
+  const msg = message.replace(trigger, '')
+  const notification = new Audio('https://www.myinstants.com/media/sounds/tethys.mp3')
+  notification.play()
+  notification.onended = () => {
+    bot.speak(`${user} dijo:`, { voiceId: 53, pitch: 1.2 })
+    bot.speak(msg, { voiceId: 31, pitch: 1.4 })
+  }
 }
 
 socket.on('chat message', msg => {
@@ -36,6 +52,7 @@ socket.on('chat message', msg => {
     return
   }
   const messages = brain.get('messages')
+  trySpeak(username, message)
   messages.unshift({ username, message, uid })
   brain.set({ messages })
 })
