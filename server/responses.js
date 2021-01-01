@@ -91,7 +91,7 @@ const setupResponses = () => {
     bot.reportConfig(socket)
   })
   bot.on('/mypts', async (socket, params, user) => {
-    const userPts = await bot.brain.hget(user, 'pts')
+    const userPts = ~~await bot.brain.hget(user, 'pts')
     bot.sendSystem(socket, '--')
     bot.sendSystem(socket, `TIENES ${userPts} PUNTOS ACUMULADOS`)
     bot.sendSystem(socket, '--')
