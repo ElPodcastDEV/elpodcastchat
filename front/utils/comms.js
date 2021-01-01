@@ -25,8 +25,8 @@ const trySpeak = (user, message) => {
   const notification = new Audio('https://www.myinstants.com/media/sounds/tethys.mp3')
   notification.play()
   notification.onended = () => {
-    bot.speak(`${user} dijo:`, { voiceId: 53, pitch: 1.2 })
-    bot.speak(msg, { voiceId: 31, pitch: 1.4 })
+    bot.speak(`${user} dijo:`, { voiceId: 9, pitch: 1.2 })
+    bot.speak(msg, { voiceId: 3, pitch: 1.4 })
   }
 }
 
