@@ -59,14 +59,47 @@ const customActions = {
       broadcastSystem(`${socket.userName} se ha unido!`)
     }
   },
-  requestSetup: async (socket) => {
+  textToSpeech: async (socket, msg) => {
+    const { userFromToken } = JSON.parse(msg)
+    if (!userFromToken) return
+    const userPts = ~~await brain.hget(userFromToken, 'pts')
+    const newPts = userPts - 100
+    if (newPts < 0) {
+      return [
+        'Necesitas por lo menos 100 puntos para mandar un mensaje al aire',
+        `Actualmente tienes ${userPts} puntos acumulados`,
+        'Para más información escribe /mypts'
+      ].forEach(systemMsg => {
+        sendSystem(socket, systemMsg)
+      })
+    }
+    await brain.hset(userFromToken, 'pts', newPts)
+    io.emit('chat message', msg)
+    sendSystem(socket, `Te quedan: ${newPts} puntos`)
+  },
+  requestSetup: async (socket, msg) => {
+    const { userFromToken } = JSON.parse(msg)
     const setupData = await brain.hgetall('system-config')
+    const isEpOnline = setupData.online === 'true'
+    acumPts(socket, userFromToken, isEpOnline)
     sendSystemData(
       socket,
       'setupChat',
       JSON.stringify(setupData)
     )
   }
+}
+
+const acumPts = async (socket, user, isOnline) => {
+  if (!user || !isOnline) return
+  let userPts = ~~await brain.hget(user, 'pts')
+  await brain.hset(user, 'pts', userPts + 1)
+  userPts = ~~await brain.hget(user, 'pts')
+  if (userPts % 50 !== 0) return
+  sendSystem(
+    socket,
+    `Tienes ${userPts} puntos acumulados!`
+  )
 }
 
 io.on('connection', socket => {
@@ -81,19 +114,6 @@ io.on('connection', socket => {
   socket.on('chat message', async msg => {
     const { message, token, messageType } = JSON.parse(msg)
     const { userName: userFromToken } = getTokenData(token)
-    if (message && message[0] === '/') {
-      return tryCommands(message, socket, userFromToken)
-    }
-    if (message && message.slice(0, 4) === 'git ') {
-      tryCommands(message, socket, userFromToken)
-    }
-    if (socket.reclaiming) {
-      sendSystem(
-        socket,
-        'Actualmente no puedes mandar mensajes, hasta que cambies de nick o lo reclames'
-      )
-      return
-    }
 
     const nMsg = JSON.stringify({
       ...JSON.parse(msg),
@@ -101,6 +121,21 @@ io.on('connection', socket => {
       userFromToken
     })
 
+    if (message && message[0] === '/') {
+      return tryCommands(message, socket, userFromToken)
+    }
+    if (message && message.slice(0, 3) === '!s ') {
+      return customActions.textToSpeech(socket, nMsg)
+    }
+    if (message && message.slice(0, 4) === 'git ') {
+      tryCommands(message, socket, userFromToken)
+    }
+    if (socket.reclaiming) {
+      return sendSystem(
+        socket,
+        'Actualmente no puedes mandar mensajes, hasta que cambies de nick o lo reclames'
+      )
+    }
     if (customActions[messageType]) {
       return customActions[messageType](socket, nMsg)
     }

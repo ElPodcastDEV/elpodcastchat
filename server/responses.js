@@ -90,6 +90,17 @@ const setupResponses = () => {
     await bot.brain.hdel('system-config', key)
     bot.reportConfig(socket)
   })
+  bot.on('/mypts', async (socket, params, user) => {
+    const userPts = await bot.brain.hget(user, 'pts')
+    bot.sendSystem(socket, '--')
+    bot.sendSystem(socket, `TIENES ${userPts} PUNTOS ACUMULADOS`)
+    bot.sendSystem(socket, '--')
+    bot.sendSystem(socket, 'Los puntos se acumulan mientras estés en el chat')
+    bot.sendSystem(socket, 'durante la transmisión en vivo de El Podcast DEV')
+    bot.sendSystem(socket, 'Puedes usarlos mandando un mensaje al aire con el comando')
+    bot.sendSystem(socket, '!s tu mensaje')
+    bot.sendSystem(socket, '(mandar un mensaje te cuesta 100 puntos)')
+  })
   bot.on('/help', async (socket, params, user) => {
     bot.sendSystem(socket, '##########################################')
     bot.sendSystem(socket, 'COMANDOS DISPONIBLES:')
@@ -98,6 +109,7 @@ const setupResponses = () => {
     bot.sendSystem(socket, '/changePassword <password> <nuevopassword>')
     bot.sendSystem(socket, '/clear')
     bot.sendSystem(socket, '/logout')
+    bot.sendSystem(socket, '/mypts')
     bot.sendSystem(socket, '/img')
     bot.sendSystem(socket, '/gif <url/a/la/imagen.gif>')
     bot.sendSystem(socket, '/git status')
@@ -142,7 +154,9 @@ const setupResponses = () => {
       push: async _ => {
         if (!isAdmin) return
         bot.brain.del('system-config-titles')
-        await bot.brain.hset('system-config', 'branchMessage', '')
+        bot.brain.del('system-config')
+        bot.brain.hset('system-config', 'branchMessage', '')
+        bot.brain.hset('system-config', 'episode', 'master')
         bot.brain.hset('system-config', 'guests', 'W10=')
         bot.brain.hset('system-config', 'stream', '')
         bot.broadcastSystem('Pusheado a origin')
