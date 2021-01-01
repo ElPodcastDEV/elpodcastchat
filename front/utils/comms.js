@@ -19,14 +19,15 @@ export const getStatus = async () => {
 const trySpeak = (user, message) => {
   const queryParams = new URLSearchParams(window.location.search)
   if (queryParams.get('speaker') !== 'true') return
+  const [announcer, speaker] = JSON.parse(queryParams.get('voices') || '[{},{}]')
   const trigger = '!s '
   if (user === 'SYSTEM' || message.slice(0, trigger.length) !== trigger) return
   const msg = message.replace(trigger, '')
   const notification = new Audio('https://www.myinstants.com/media/sounds/tethys.mp3')
   notification.play()
   notification.onended = () => {
-    bot.speak(`${user} dijo:`, { voiceId: 9, pitch: 1.2 })
-    bot.speak(msg, { voiceId: 3, pitch: 1.4 })
+    bot.speak(`${user} dijo:`, announcer)
+    bot.speak(msg, speaker)
   }
 }
 
