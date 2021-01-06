@@ -5,6 +5,7 @@ import Database from 'Utils/indexedDB'
 const database = new Database('images')
 
 const storage = Vue.observable({
+  imageToVIP: false,
   messages: [],
   userName: null,
   token: null,
@@ -20,7 +21,7 @@ const storage = Vue.observable({
   images: []
 })
 
-const uuid = () => {
+export const uuid = () => {
   const uid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     var r = Math.random() * 16 | 0; var v = c === 'x' ? r : (r & 0x3 | 0x8)
     return v.toString(16)

@@ -5,6 +5,7 @@ import messages from 'Components/messages.vue'
 import loginmodal from 'Components/loginModal.vue'
 import media from 'Components/media.vue'
 import imagepreview from 'Components/imagePreview.vue'
+import soundpanel from 'Components/soundPanel.vue'
 
 document.addEventListener('DOMContentLoaded', function () {
   Vue.config.keyCodes = {
@@ -17,7 +18,8 @@ document.addEventListener('DOMContentLoaded', function () {
       messages,
       loginmodal,
       imagepreview,
-      media
+      media,
+      soundpanel
     },
     mounted () {
       brain.loadData()

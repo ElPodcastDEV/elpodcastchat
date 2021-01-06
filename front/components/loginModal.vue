@@ -9,6 +9,16 @@ form button
   padding: 10px
   background-color: var(--bgdarker)
   color: var(--foreground)
+.modal
+  .loginWindow
+    position: relative
+    max-width: 90%
+    max-height: 90%
+  img
+    box-shadow: 0 0 10px 0 var(--bgdarker)
+  .loginWindow div
+    display: flex
+    margin-top: 10px
 </style>
 <template lang="pug">
   modal(:display="!userName")
