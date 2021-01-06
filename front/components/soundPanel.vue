@@ -75,7 +75,7 @@ import jingle from 'Components/jingle.vue'
 import brain, { uuid } from 'Utils/brain'
 export default {
   data: () => ({
-    showPanel: true,
+    showPanel: false,
     jg: {
       name: 'Button name',
       file: null,
