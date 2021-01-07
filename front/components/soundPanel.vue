@@ -73,6 +73,8 @@ input
 import modal from 'Components/modal.vue'
 import jingle from 'Components/jingle.vue'
 import brain, { uuid } from 'Utils/brain'
+import { sendMessage } from 'Utils/comms'
+
 export default {
   data: () => ({
     showPanel: false,
@@ -94,6 +96,7 @@ export default {
       })
       if (!this.jingles.find(j => j.id === newJingle.id)) this.jingles.push(newJingle)
       this.resetValues()
+      this.saveJingles()
     },
     mutate (id) {
       const selected = this.jingles.find(j => j.id === id)
@@ -103,6 +106,18 @@ export default {
     deleteJingle () {
       this.jingles = this.jingles.filter(j => j.id !== this.currentJingle)
       this.resetValues()
+      this.saveJingles()
+    },
+    saveJingles () {
+      const token = brain.get('token')
+      const username = brain.get('userName')
+      if (!username) return
+      sendMessage({
+        username,
+        messageType: 'saveSounds',
+        token,
+        jingles: this.jingles
+      })
     },
     resetValues () {
       this.jg = {
@@ -117,6 +132,25 @@ export default {
   computed: {
     isAdmin () {
       return brain.get('imageToVIP')
+    },
+    bJingles () {
+      return brain.get('jingles')
+    }
+  },
+  watch: {
+    showPanel (isShowing) {
+      if (!isShowing) return
+      const token = brain.get('token')
+      const username = brain.get('userName')
+      if (!username) return
+      sendMessage({
+        username,
+        messageType: 'requestSounds',
+        token
+      })
+    },
+    bJingles (newData) {
+      this.jingles = JSON.parse(JSON.stringify(newData))
     }
   },
   components: {

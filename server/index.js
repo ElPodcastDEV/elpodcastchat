@@ -87,6 +87,20 @@ const customActions = {
       'setupChat',
       JSON.stringify(setupData)
     )
+  },
+  requestSounds: async (socket, msg) => {
+    const jingles = await brain.get('system-jingles') || '[]'
+    sendSystemData(
+      socket,
+      'setupSounds',
+      jingles
+    )
+  },
+  saveSounds: async (socket, msg) => {
+    const { userFromToken, jingles } = JSON.parse(msg)
+    if (!userFromToken) return
+    if (!await fnIsAdmin(userFromToken)) return
+    brain.set('system-jingles', JSON.stringify(jingles))
   }
 }
 

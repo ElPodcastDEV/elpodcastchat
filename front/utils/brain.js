@@ -18,6 +18,7 @@ const storage = Vue.observable({
   stream: null,
   nGuests: 2,
   guests: 'W10=',
+  jingles: [],
   images: []
 })
 
@@ -91,6 +92,11 @@ const brain = {
   setupChat (data) {
     const chatData = JSON.parse(data)
     this.set(chatData)
+  },
+
+  setupSounds (data) {
+    const soundData = JSON.parse(data)
+    this.set({ jingles: soundData })
   },
 
   deleteMessage (msgId) {

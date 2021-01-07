@@ -1,5 +1,4 @@
 /* global fetch */
-
 import io from 'socket.io-client'
 import brain from 'Utils/brain'
 import Bot from 'Utils/texttospeech'
