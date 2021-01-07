@@ -14,6 +14,9 @@ i
 .soundPanel, .liveButton, .buttons
   position: relative
   display: flex
+.soundPanel
+  max-width: 80%
+  flex-wrap: wrap
 .actions
   display: flex
   flex-direction: column
