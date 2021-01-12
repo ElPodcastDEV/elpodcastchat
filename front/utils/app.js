@@ -23,20 +23,19 @@ document.addEventListener('DOMContentLoaded', function () {
     },
     mounted () {
       brain.loadData()
+      tryClearInterfase()
     }
   })
   return vue
 })
 
 const queryParams = new URLSearchParams(window.location.search)
-if (queryParams.get('standalone') === 'true') {
-  const doDelete = () => {
+const tryClearInterfase = () => {
+  if (queryParams.get('standalone') === 'true') {
     const toDelete = ['video', '.header', '.embed']
     if (queryParams.get('nologin') === 'true') toDelete.push('.modal')
     const items = [...document.querySelectorAll(toDelete.join(', '))]
-    if (items.length !== toDelete.length) return setTimeout(doDelete, 1000)
     items.forEach(i => i.remove())
     document.querySelector('.app').classList.add('isStandAlone')
   }
-  doDelete()
 }
