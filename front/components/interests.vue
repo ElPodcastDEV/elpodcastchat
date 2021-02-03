@@ -67,7 +67,7 @@
       li
         a(
           target='_blank'
-          href='https://twitter.com/_elpodcast'
+          href='https://twitter.com/elpodcastdev'
         ) El Twitter
       li
         a(
