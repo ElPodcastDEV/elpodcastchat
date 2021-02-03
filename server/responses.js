@@ -165,7 +165,7 @@ const setupResponses = () => {
         const titlesExecution = {
           add: _title => {
             const title = _title.join(' ').replace(/^"(.*)"$/, '$1')
-            bot.brain.lpush('system-config-titles', title)
+            bot.brain.lpush('system-config-titles', `${user}: ${title}`)
             bot.sendSystem(socket, 'Título recibido')
           },
           del: _ => {
