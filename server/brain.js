@@ -14,7 +14,9 @@ class Brain {
         'hget',
         'hdel',
         'lpush',
-        'lrange'
+        'lrange',
+        'keys',
+        'type'
       ]
     ).forEach(action => {
       this[action] = promisify(client[action]).bind(client)

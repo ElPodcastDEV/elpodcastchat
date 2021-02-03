@@ -161,6 +161,55 @@ const setupResponses = () => {
         bot.brain.hset('system-config', 'stream', '')
         bot.broadcastSystem('Pusheado a origin')
       },
+      cleardb: async _ => {
+        bot.broadcastSystem('Cleaning DB')
+        if (!isAdmin) return
+        const brain = bot.brain
+        let keys = (await brain.keys('*')).filter(key => key !== 'system-config')
+        const arr = []
+        keys.forEach(key => {
+          arr.push(brain.type(key))
+        })
+        const types = await Promise.all(arr)
+        arr.length = 0
+        keys = keys
+          .map((key, index) => [key, types[index]])
+          .filter(([, type]) => type === 'hash')
+          .map(([key]) => key)
+        keys.forEach(key => {
+          arr.push(brain.hget(key, 'password'))
+        })
+        const passwords = await Promise.all(arr)
+        const [delKeys, resetKeys] = [[], []]
+        keys
+          .map((key, index) => [key, passwords[index]])
+          .forEach(([key, password]) => {
+            password === null ? delKeys.push(key) : resetKeys.push(key)
+          })
+        delKeys
+          .forEach(key => {
+            bot.sendSystem(socket, `Expiring temp user: ${key}`)
+            brain.del(key)
+          })
+        const pAdmins = []
+        resetKeys
+          .forEach(key => {
+            bot.sendSystem(socket, `Expiring user pts: ${key}`)
+            brain.hset(key, 'pts', 0)
+            pAdmins.push(brain.hget(key, 'permissions'))
+          })
+        const admins = await Promise.all(pAdmins)
+        resetKeys
+          .map((key, index) => [key, admins[index]])
+          .filter(([, permissions]) => permissions !== null)
+          .map(([key, value]) => [key, JSON.parse(value)])
+          .filter(([, { isAdmin }]) => isAdmin === true)
+          .forEach(([key]) => {
+            bot.sendSystem(socket, `Resetting admin pts: ${key}`)
+            brain.hset(key, 'pts', 1e6)
+          })
+        bot.broadcastSystem('Database cleared')
+      },
       titles: ([action, ...rest]) => {
         const titlesExecution = {
           add: _title => {
