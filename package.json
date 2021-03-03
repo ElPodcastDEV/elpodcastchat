@@ -22,7 +22,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "redis": "^2.8.0",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.4.0"
   },
   "devDependencies": {
     "css-loader": "^3.3.2",
