@@ -14,9 +14,16 @@ html(lang="es")
     meta(name="msapplication-TileColor" content="#222244")
     meta(name="theme-color" content="#222244")
 
+    // Global site tag (gtag.js) Google Analytics
+    script(async src="https://www.googletagmanager.com/gtag/js?id=G-PPBJKV89JD")
+    script.
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PPBJKV89JD');
+
   body
     video(src="https://www.videvo.net/videvo_files/converted/2013_10/videos/Background_08.mov70423.mp4" loop autoplay playsinline muted).background-video
-    //- video(src="https://static.videezy.com/system/resources/previews/000/039/599/original/4K_2.mp4" loop autoplay playsinline muted).background-video
     section#app.app
       messages
       media
