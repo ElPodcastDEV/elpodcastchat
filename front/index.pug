@@ -13,14 +13,7 @@ html(lang="es")
     link(rel="mask-icon" href="/safari-pinned-tab.svg" color="#222244")
     meta(name="msapplication-TileColor" content="#222244")
     meta(name="theme-color" content="#222244")
-
-    // Global site tag (gtag.js) Google Analytics
-    script(async src="https://www.googletagmanager.com/gtag/js?id=G-PPBJKV89JD")
-    script.
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-PPBJKV89JD');
+    include ./analytics.pug
 
   body
     video(src="https://www.videvo.net/videvo_files/converted/2013_10/videos/Background_08.mov70423.mp4" loop autoplay playsinline muted).background-video
